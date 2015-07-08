@@ -1,9 +1,9 @@
 import json
 import os.path
 from OpenGL.GL import *
-from vbo import VBO
-from image import Image
-from shader import Shader
+from render.vbo import VBO
+from render.image import Image
+from render.shader import Shader
 from item import *
 import numpy as np
 from utils.matrix import Matrix

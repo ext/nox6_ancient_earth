@@ -1,8 +1,8 @@
-from shader import Shader
+from render.shader import Shader
 from utils.matrix import Matrix
 from utils.vector import Vector2f
 from OpenGL.GL import *
-import image
+import render.image as image
 from player import Player
 
 class Item(object):

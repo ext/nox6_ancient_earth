@@ -5,15 +5,15 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-from vbo import VBO
-from fbo import FBO
-from shader import Shader
-from utils.vector import Vector2i, Vector2f
+from render.fbo import FBO
+from render.hud import HUD, ALIGN_CENTER
+from render.image import Image
+from render.shader import Shader
+from render.vbo import VBO
 from utils.matrix import Matrix
+from utils.vector import Vector2i, Vector2f
 from map import Map
 from player import Player
-from image import Image
-from hud import HUD, ALIGN_CENTER
 import math
 
 event_table = {}
