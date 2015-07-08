@@ -211,11 +211,10 @@ class Game(object):
             self.shader.bind()
 
             # parallax background
-            pm1 = Matrix.identity()
-            pm1[3,0] = self.player.pos.x * 0.35 - 20
-            pm1[3,1] = self.player.pos.y * 0.5 - 20
-            pm1[0,0] = 42.0 * self.parallax_rep
-            pm1[1,1] = 42.0
+            pm1 = Matrix.transform(
+                self.player.pos.x * 0.35 - 20, self.player.pos.y * 0.5 - 20, 0,
+                42.0 * self.parallax_rep, 42.0, 0
+            )
             self.parallax.texture_bind()
             Shader.upload_model(pm1)
             self.repquad.draw()
@@ -230,18 +229,15 @@ class Game(object):
             self.player.draw()
 
             # parallax 2
-            pm1 = Matrix.identity()
-            pm1[3,0] = self.player.pos.x * -2.0 + 100
-            pm1[3,1] = self.player.pos.y * 0.5 - 45 * 3 + 10
-            pm1[0,0] = 45.0 * self.parallax_rep * 3
-            pm1[1,1] = 45 * 3
+            pm1 = Matrix.transform(
+                self.player.pos.x * -2.0 + 100, self.player.pos.y * 0.5 - 45 * 3 + 10, 0,
+                45.0 * self.parallax_rep * 3, 45 * 3, 0
+            )
             self.parallax2.texture_bind()
             Shader.upload_model(pm1)
             self.repquad.draw()
 
-        mat = Matrix.identity()
-        mat[0,0] = self.size.x
-        mat[1,1] = self.size.y
+        mat = Matrix.scale(self.size.x, self.size.y)
         Shader.upload_projection_view(self.ortho, Matrix.identity())
         Shader.upload_model(mat)
 
@@ -250,15 +246,12 @@ class Game(object):
         self.quad.draw()
 
         # messagebox
-        mat = Matrix.identity()
-        mat[3,0] = self.size.x / 2 - self.hud.width / 2
-        mat[3,1] = self.size.y - self.hud.height
+        mat = Matrix.translate(self.size.x / 2 - self.hud.width / 2, self.size.y - self.hud.height)
         Shader.upload_model(mat)
         self.hud.draw()
 
         # hpmeter
-        mat = Matrix.identity()
-        mat[3,1] = self.size.y / 2 - self.hpmeter.height / 2
+        mat = Matrix.translate(0, self.size.y / 2 - self.hpmeter.height / 2)
         Shader.upload_model(mat)
         self.hpmeter.draw()
 

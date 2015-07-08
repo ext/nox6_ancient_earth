@@ -32,3 +32,22 @@ class Matrix:
         tr[3,1] = y
         tr[3,2] = z
         return tr
+
+    @staticmethod
+    def scale(x, y, z=1):
+        tr = Matrix.identity()
+        tr[0,0] = x
+        tr[1,1] = y
+        tr[2,2] = z
+        return tr
+
+    @staticmethod
+    def transform(tx, ty, tz, sx, sy, sz):
+        tr = Matrix.identity()
+        tr[3,0] = tx
+        tr[3,1] = ty
+        tr[3,2] = tz
+        tr[0,0] = sx
+        tr[1,1] = sy
+        tr[2,2] = sz
+        return tr
