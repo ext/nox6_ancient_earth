@@ -1,7 +1,7 @@
 from image import Image
 from vbo import VBO
 from shader import Shader
-from vector import Vector2f
+from utils.vector import Vector2f
 import numpy as np
 from OpenGL.GL import *
 import math
