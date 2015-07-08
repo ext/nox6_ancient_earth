@@ -1,10 +1,11 @@
 from image import Image
 from vbo import VBO
-from shader import Shader, Matrix
+from shader import Shader
 from vector import Vector2f
 import numpy as np
 from OpenGL.GL import *
 import math
+from utils.matrix import Matrix
 
 def walkable(id):
     return id <= 1 or id > 100

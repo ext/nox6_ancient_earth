@@ -1,5 +1,6 @@
 from vector import Vector2f
-from shader import Shader, Matrix
+from shader import Shader
+from utils.matrix import Matrix
 from OpenGL.GL import *
 import image
 from player import Player

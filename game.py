@@ -7,8 +7,9 @@ from OpenGL.GLU import *
 
 from vbo import VBO
 from fbo import FBO
-from shader import Shader, Matrix
+from shader import Shader
 from vector import Vector2i, Vector2f
+from utils.matrix import Matrix
 from map import Map
 from player import Player
 from image import Image

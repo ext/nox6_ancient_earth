@@ -3,9 +3,10 @@ import os.path
 from OpenGL.GL import *
 from vbo import VBO
 from image import Image
-from shader import Shader, Matrix
+from shader import Shader
 from item import *
 import numpy as np
+from utils.matrix import Matrix
 
 class Map(object):
     def __init__(self, filename):
