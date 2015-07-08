@@ -24,3 +24,11 @@ class Matrix:
     def identity():
         glLoadIdentity()
         return glGetFloatv(GL_MODELVIEW_MATRIX)
+
+    @staticmethod
+    def translate(x, y, z=0):
+        tr = Matrix.identity()
+        tr[3,0] = x
+        tr[3,1] = y
+        tr[3,2] = z
+        return tr
