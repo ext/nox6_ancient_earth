@@ -4,6 +4,28 @@ from utils.vector import Vector2f
 from OpenGL.GL import *
 import render.image as image
 from player import Player
+import types
+
+type_register = {}
+
+def register_type(cls_or_name):
+    name = None
+    def inner(cls, *args, **kwargs):
+        global type_register
+        type_register[name] = cls
+        return cls
+
+    if isinstance(cls_or_name, (type, types.ClassType)):
+        name = cls_or_name.__name__
+        return inner(cls_or_name)
+    else:
+        name = cls_or_name
+        return inner
+
+def create(typename, *args, **kwargs):
+    if typename in type_register:
+        return type_register[typename](*args, **kwargs)
+    raise KeyError, 'no item type named %s' % typename
 
 class Item(object):
     def __init__(self, name, x, y, **kwargs):
@@ -20,6 +42,7 @@ class Item(object):
     def kill(self):
         self.killed = True
 
+@register_type('food')
 class Food(Item):
     def __init__(self, **kwargs):
         Item.__init__(self, **kwargs)
@@ -30,6 +53,7 @@ class Food(Item):
         Item.kill(self)
         game.eat.play()
 
+@register_type('kebab')
 class Schebab(Item):
     def __init__(self, **kwargs):
         Item.__init__(self, **kwargs)
@@ -40,7 +64,7 @@ class Schebab(Item):
         Item.kill(self)
         game.eat.play()
 
-
+@register_type('key')
 class QuestItem(Item):
     def __init__(self, properties, **kwargs):
         Item.__init__(self, **kwargs)

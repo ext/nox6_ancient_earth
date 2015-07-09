@@ -4,7 +4,7 @@ from OpenGL.GL import *
 from render.vbo import VBO
 from render.image import Image
 from render.shader import Shader
-from item import *
+import item
 import numpy as np
 from utils.matrix import Matrix
 
@@ -60,12 +60,7 @@ class Map(object):
     @staticmethod
     def twiddle(src):
         for obj in src:
-            t = obj['type']
-            if t == 'food': item = Food(**obj)
-            elif t == 'kebab': item = Schebab(**obj)
-            elif t == 'key': item = QuestItem(**obj)
-            else: raise ValueError, 'unknown type %s' % t
-            yield item
+            yield item.create(obj['type'], **obj)
 
     def draw(self, *args, **kwargs):
         Shader.upload_model(Matrix.identity())
