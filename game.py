@@ -14,7 +14,6 @@ from render.light import Light
 from utils.matrix import Matrix
 from utils.vector import Vector2i, Vector2f, Vector3f
 from map import Map
-from player import Player
 import math
 import render.image as image
 
@@ -28,7 +27,7 @@ def event(type):
 class Game(object):
     def __init__(self):
         self._running = False
-        self.camera = Vector2f(0,5)
+        self.camera = Vector2f(19,-11)
 
     def init(self, size, fullscreen=False):
         flags = OPENGL|DOUBLEBUF
@@ -36,7 +35,7 @@ class Game(object):
             flags |= FULLSCREEN
 
         pygame.display.set_mode(size.xy, flags)
-        pygame.display.set_caption('Super Chainsaw Food Adventure')
+        pygame.display.set_caption('Super Ancient Precision Adventure^WGame')
 
         i = pygame.display.Info()
         self.size = Vector2i(i.current_w, i.current_h)
@@ -63,26 +62,27 @@ class Game(object):
         self.quad = VBO(GL_QUADS, v, i)
 
         # parallax
-        self.parallax_rep = 25
+        self.parallax_rep = 10
         v = np.array([
                 0,0,0, 0,1,
                 1,0,0, self.parallax_rep, 1,
-                1,1,0, self.parallax_rep,0,
+                1,1,0, self.parallax_rep, 0,
                 0,1,0, 0,0,
                 ], np.float32)
         i = np.array([0,1,2,3], np.uint32)
         self.repquad = VBO(GL_QUADS, v, i)
         self.parallax = Image('texture/sky.png', wrap=GL_REPEAT)
+        self.hudbg = Image('texture/hud_bottom.png')
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
         self.shader = Shader.load('default')
+        self.shader_hud = Shader.load('hud')
         self.post = Shader.load('post')
 
-        self.ambient_light = (0.0, 0.0, 0.0)
+        self.ambient_light = (1.0, 1.0, 1.0)
 
         self.map = Map('map.json')
-        self.player = Player(Vector2f(55,-9))
         self.clock = pygame.time.Clock()
         self.hud = HUD(Vector2i(500,100))
         self.font = self.hud.create_font(size=16)
@@ -116,14 +116,6 @@ class Game(object):
         if event.key == 27: # esc
             return self.quit()
 
-        if event.key == 119:
-            self.player.jump()
-
-    @event(pygame.KEYUP)
-    def on_keyrelease(self, event):
-        if event.key == 119:
-            self.player.unjump()
-
     def poll(self):
         global event_table
         for event in pygame.event.get():
@@ -135,18 +127,12 @@ class Game(object):
     def update(self):
         key = pygame.key.get_pressed()
 
-        self.player.vel.x = 0
-        if key[97 ]: self.player.vel.x = -0.15
-        if key[100]: self.player.vel.x =  0.15
-
         if key[260]: self.camera.x -= 0.1
         if key[262]: self.camera.x += 0.1
         if key[258]: self.camera.y -= 0.1
         if key[264]: self.camera.y += 0.1
 
         dt = 1.0 / self.clock.tick(60)
-        self.player.update(dt, self.map)
-        self.player.frobnicate(self.map.pickups)
         self.map.update()
 
     def render_hud(self):
@@ -168,35 +154,35 @@ class Game(object):
 
     def render_world(self):
         view = Matrix.lookat(
-            self.player.pos.x, self.player.pos.y+7, 15,
-            self.player.pos.x, self.player.pos.y+7, 0,
+            self.camera.x, self.camera.y, 15,
+            self.camera.x, self.camera.y, 0,
             0,1,0)
 
         with self.fbo as frame:
             frame.clear(0,0.03,0.15,1)
 
             Shader.upload_projection_view(self.projection, view)
-            Shader.upload_game(self.player)
+            Shader.upload_game(None)
             Shader.upload_light(self.ambient_light, self.cull_lights())
-            self.shader.bind()
 
             # parallax background
             pm = Matrix.transform(
-                self.player.pos.x * 0.35 - 20, self.player.pos.y * 0.5 - 20, 0,
-                42.0 * self.parallax_rep, 42.0, 0
+                self.camera.x * 0.35 - 20, self.camera.y * 0.5 - 12, 0,
+                (19*4) * self.parallax_rep, 19, 0
             )
+            self.shader_hud.bind()
             self.parallax.texture_bind()
             Shader.upload_model(pm)
             self.repquad.draw()
 
             Shader.upload_projection_view(self.projection, view)
 
+            self.shader.bind()
             self.map.draw()
 
             # entities
             for obj in self.map.pickups:
                 obj.draw()
-            self.player.draw()
 
     def render(self):
         glClearColor(1,0,1,1)
@@ -211,6 +197,16 @@ class Game(object):
 
         self.fbo.bind_texture()
         self.post.bind()
+        self.quad.draw()
+
+        # hud background
+        pm = Matrix.transform(
+            0, 0, 0,
+            self.size.x, self.size.x * (160./800), 1
+        )
+        self.shader_hud.bind()
+        self.hudbg.texture_bind()
+        Shader.upload_model(pm)
         self.quad.draw()
 
         # messagebox
@@ -236,14 +232,15 @@ class Game(object):
 def run():
     pygame.display.init()
     pygame.mixer.init(channels=3, buffer=1024)
-    pygame.mouse.set_visible(False)
+    pygame.mouse.set_visible(True)
 
     game = Game()
 
     # superglobals for quick access
     __builtins__['game'] = game
 
-    game.init(Vector2i(800,600), fullscreen=False)
+    #game.init(Vector2i(800,600), fullscreen=False)
+    game.init(Vector2i(0,0), fullscreen=True)
     game.run()
 
     # force deallocation
