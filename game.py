@@ -76,9 +76,9 @@ class Game(object):
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
-        self.shader = Shader('derp')
-        self.passthru = Shader('passtru')
-        self.herp = Shader('herp')
+        self.shader = Shader.load('derp')
+        self.passthru = Shader.load('passtru')
+        self.herp = Shader.load('herp')
 
         self.map = Map('map.json')
         self.player = Player(Vector2f(55,-9))

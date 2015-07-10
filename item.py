@@ -30,6 +30,7 @@ def create(typename, *args, **kwargs):
 class Item(object):
     diffuse = None # use sprite default
     normal = None  # use sprite default
+    shader_name = 'default'
 
     def __init__(self, name, x, y, properties={}, **kwargs):
         self.name = name
@@ -40,13 +41,21 @@ class Item(object):
         if 'texture' in properties:
             self.diffuse = properties['texture']
 
+        if 'shader' in properties:
+            self.shader_name = properties['shader']
+
         self.load_sprite(self.diffuse, self.normal)
+        self.shader = Shader.load(self.shader_name)
+
+        if self.shader is None:
+            raise AttributeError, 'Failed to load shader %s' % self.shader_name
 
     def load_sprite(self, *args, **kwargs):
         self.sprite = image.Sprite(*args, **kwargs)
 
     def draw(self, q):
         Shader.upload_model(self.mat)
+        self.shader.bind()
         self.sprite.draw()
 
     def kill(self):

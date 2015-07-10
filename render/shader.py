@@ -80,6 +80,13 @@ class Shader(object):
     uproj = None
     umodel = None
     uplayer = None
+    lut = {}
+
+    @classmethod
+    def load(cls, filename):
+        if filename not in cls.lut:
+            cls.lut[filename] = Shader(filename)
+        return cls.lut[filename]
 
     def __init__(self, name):
         self.initialize()
