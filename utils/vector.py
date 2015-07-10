@@ -81,7 +81,7 @@ class Vector2i (Vector2):
     datatype = int
 
     def __repr__(self):
-        return '<vector (%d, %d)>' % (self.x, self.y)
+        return '<vector (%d, %d)>' % self.xy
 
 class Vector3:
     def __init__(self, x=0.0, y=0.0, z=0.0):
@@ -145,6 +145,17 @@ class Vector3:
             return self.__dict__[key]
         except:
             raise AttributeError, '%s has no attribute %s' % (self.__class__.__name__, key)
+
+class Vector3f (Vector3):
+    """ Alias for Vector3, just for consistency """
+    pass
+
+class Vector3i (Vector3):
+    """ Vector3 with integer """
+    datatype = int
+
+    def __repr__(self):
+        return '<vector (%d, %d, %d)>' % self.xyz
 
 # ------------------------------------------------------------------------------
 #
@@ -396,4 +407,3 @@ if __name__ == '__main__':
 
     suite = unittest.TestLoader().getTestsFromTestCases([test_vector2, test_vector3, test_vector2_datatypes])
     unittest.TextTestRunner(verbosity=2).run(suite)
-
