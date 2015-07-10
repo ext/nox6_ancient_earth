@@ -15,23 +15,47 @@ class Map(object):
         with open(self.filename) as fp:
             data = json.load(fp)
 
+        self.vbo = None
+        self.grid = None
         self.width  = data['width']
         self.height = data['height']
-
         self.tile_width  = data['tilewidth']
         self.tile_height = data['tileheight']
+
+        # load tilemap
+        self.load_tileset(data['tilesets'])
+
+        for layer in data['layers']:
+            if layer['type'] == 'tilelayer':
+                self.load_tiles(layer)
+
+        # load objects
+        self.obj1 = list(self.load_objects(data['layers'][1]['objects']))
+        self.obj2 = list(self.load_objects(data['layers'][2]['objects']))
+        self.obj3 = list(self.load_objects(data['layers'][3]['objects']))
+
+        self.pickups = []
+
+    def load_tileset(self, data):
+        self.texture = []
+        self.normal = []
+        for tileset in data:
+            props = tileset.get('properties', {})
+            self.texture.append(Image(tileset['image'], filter=GL_NEAREST))
+            self.normal.append(Image(props.get('normalmap', 'texture/default_normal.png'), filter=GL_NEAREST))
+
+    def load_tiles(self, layer):
+        if self.grid is not None:
+            raise ValueError, 'Currently only one tile layer is supported'
 
         # hardcoded
         dx = self.tile_width  / 128.0
         dy = self.tile_height / 128.0
         tile_div = 128 / self.tile_width
 
-        # load tilemap
-        self.load_tileset(data['tilesets'])
-
-        n = len(data['layers'][0]['data'])
+        n = len(layer['data'])
         ver = np.zeros((n*4, 5), np.float32)
-        for i, tile in enumerate(data['layers'][0]['data']):
+        for i, tile in enumerate(layer['data']):
             x = i % self.width
             y = -(i / self.width)
 
@@ -47,26 +71,10 @@ class Map(object):
         ver = ver.flatten()
         ind = np.array(range(n*4), np.uint32)
         self.vbo = VBO(GL_QUADS, ver, ind)
-
-        self.grid = np.array(data['layers'][0]['data'], np.uint32)
-
-        # load objects
-        self.obj1 = list(self.twiddle(data['layers'][1]['objects']))
-        self.obj2 = list(self.twiddle(data['layers'][2]['objects']))
-        self.obj3 = list(self.twiddle(data['layers'][3]['objects']))
-
-        self.pickups = []
-
-    def load_tileset(self, data):
-        self.texture = []
-        self.normal = []
-        for tileset in data:
-            props = tileset.get('properties', {})
-            self.texture.append(Image(tileset['image'], filter=GL_NEAREST))
-            self.normal.append(Image(props.get('normalmap', 'texture/default_normal.png'), filter=GL_NEAREST))
+        self.grid = np.array(layer['data'], np.uint32)
 
     @staticmethod
-    def twiddle(src):
+    def load_objects(src):
         for obj in src:
             yield item.create(obj['type'], **obj)
 
