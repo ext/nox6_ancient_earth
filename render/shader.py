@@ -95,6 +95,7 @@ class Shader(object):
         self.add_shader(name, '.vs', GL_VERTEX_SHADER)
         self.add_shader(name, '.fs', GL_FRAGMENT_SHADER)
         glLinkProgram(self.sp)
+        self.print_log(self.sp)
 
         self.bind()
 
