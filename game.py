@@ -238,6 +238,7 @@ class Game(object):
             )
             self.parallax2.texture_bind()
             Shader.upload_model(pm1)
+            self.shader.bind()
             self.repquad.draw()
 
         mat = Matrix.scale(self.size.x, self.size.y)
