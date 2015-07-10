@@ -17,6 +17,8 @@ class Map(object):
 
         self.vbo = None
         self.grid = None
+        self.objects = {}
+        self.pickups = []
         self.width  = data['width']
         self.height = data['height']
         self.tile_width  = data['tilewidth']
@@ -26,15 +28,12 @@ class Map(object):
         self.load_tileset(data['tilesets'])
 
         for layer in data['layers']:
+            name = layer['name']
+
             if layer['type'] == 'tilelayer':
                 self.load_tiles(layer)
-
-        # load objects
-        self.obj1 = list(self.load_objects(data['layers'][1]['objects']))
-        self.obj2 = list(self.load_objects(data['layers'][2]['objects']))
-        self.obj3 = list(self.load_objects(data['layers'][3]['objects']))
-
-        self.pickups = []
+            elif layer['type'] == 'objectgroup':
+                self.objects[name] = list(self.load_objects(layer['objects']))
 
     def load_tileset(self, data):
         self.texture = []

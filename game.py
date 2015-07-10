@@ -283,11 +283,11 @@ class Game(object):
 
     def set_stage(self, n):
         if n == 1:
-            self.map.pickups.extend(self.map.obj1)
+            self.map.pickups.extend(self.map.objects['stage 1'])
         elif n == 2:
-            self.map.pickups.extend(self.map.obj2)
+            self.map.pickups.extend(self.map.objects['stage 2'])
         elif n == 3:
-            self.map.pickups.extend(self.map.obj3)
+            self.map.pickups.extend(self.map.objects['stage 3'])
 
     def over(self):
         self.killfade = pygame.time.get_ticks() / 1000.0
