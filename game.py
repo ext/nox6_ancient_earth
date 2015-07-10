@@ -10,8 +10,9 @@ from render.hud import HUD, ALIGN_CENTER
 from render.image import Image
 from render.shader import Shader
 from render.vbo import VBO
+from render.light import Light
 from utils.matrix import Matrix
-from utils.vector import Vector2i, Vector2f
+from utils.vector import Vector2i, Vector2f, Vector3f
 from map import Map
 from player import Player
 import math
@@ -77,8 +78,10 @@ class Game(object):
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
         self.shader = Shader.load('derp')
-        self.passthru = Shader.load('passtru')
         self.herp = Shader.load('herp')
+
+        self.ambient_light = (0.2, 0.2, 0.2)
+        self.lights = [Light(Vector3f(55,-9,1), (1,0,1), 200, 1)]
 
         self.map = Map('map.json')
         self.player = Player(Vector2f(55,-9))
@@ -209,8 +212,13 @@ class Game(object):
         with self.fbo as frame:
             frame.clear(0,0.03,0.15,1)
 
+            # temp hack, move light 0 to player pos
+            self.lights[0].pos.x = self.player.pos.x
+            self.lights[0].pos.y = self.player.pos.y
+
             Shader.upload_projection_view(self.projection, view)
             Shader.upload_player(self.player)
+            Shader.upload_light(self.ambient_light, self.lights)
             self.shader.bind()
 
             # parallax background

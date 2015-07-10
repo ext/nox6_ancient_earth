@@ -37,3 +37,16 @@ layout(std140) uniform player {
 	float hp;
 	float fade;
 };
+
+struct light_data {
+	vec4 pos;
+	vec4 color;
+	float radius;
+	float falloff;
+};
+
+layout(std140) uniform light {
+	uint num_lights;
+	vec4 ambient;
+	light_data lights[12];
+};

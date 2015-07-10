@@ -77,9 +77,12 @@ class UniformBlock(object):
                 glBufferSubData(GL_UNIFORM_BUFFER, offset, size, value);
 
 class Shader(object):
+    max_lights = 12 # hardcoded in common.glsl
+
     uproj = None
     umodel = None
     uplayer = None
+    ulight = None
     lut = {}
 
     @classmethod
@@ -175,12 +178,31 @@ class Shader(object):
         Shader.uplayer.upload((4*6, 4*1, np.array(game.killfade2, np.float32)))
 
     @staticmethod
+    def upload_light(ambient, lights):
+        if len(lights) > Shader.max_lights:
+            raise ValueError, 'Too many lights uploaded (max: %d, got: %d)' % (Shader.max_ligths, len(lights))
+
+        Shader.ulight.upload((4*0, 4*1, np.array(len(lights), np.uint32)))
+        Shader.ulight.upload((4*4, 4*3, np.array(ambient, np.float32)))
+
+        offset = 4*8
+        for light in lights:
+            Shader.ulight.upload((offset, 4*12, light.shader_data()))
+            offset += 12
+
+
+    @staticmethod
+    def lightbuffer_size(num_lights):
+        return 4*4 + 12*4*num_lights
+
+    @staticmethod
     def initialize():
         if Shader.uproj is not None: return
 
         Shader.uproj = UniformBlock('projectionViewMatrices', 4*16*3)
         Shader.umodel = UniformBlock('modelMatrices', 4*16*1)
         Shader.uplayer = UniformBlock('player', 4*7)
+        Shader.ulight = UniformBlock('light', Shader.lightbuffer_size(Shader.max_lights))
 
         for i in range(2):
             glEnableVertexAttribArray(i)
