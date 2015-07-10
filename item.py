@@ -73,6 +73,15 @@ class Catapult(Item):
         Item.__init__(self, height=height, **kwargs)
         self.mat = Matrix.transform(self.pos.x, self.pos.y - height * (1.0/8) + 1, 0, 5, 5, 1)
 
+@register_type('projectile')
+class Projectile(Item):
+    diffuse = 'texture/projectile.png'
+
+    def __init__(self, x, y, **kwargs):
+        Item.__init__(self, x=x, y=y, **kwargs)
+        self.pos = Vector2f(x,y)
+        self.mat = Matrix.transform(self.pos.x, self.pos.y, 0, 2.2, 2.2, 1)
+
 @register_type('light')
 class LightStub(Light):
     def __init__(self, name, x, y, properties={}, **kwargs):

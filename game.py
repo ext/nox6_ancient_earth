@@ -16,6 +16,7 @@ from utils.vector import Vector2i, Vector2f, Vector3f
 from map import Map
 import math
 import render.image as image
+import item
 
 event_table = {}
 def event(type):
@@ -73,6 +74,7 @@ class Game(object):
         self.repquad = VBO(GL_QUADS, v, i)
         self.parallax = Image('texture/sky.png', wrap=GL_REPEAT)
         self.hudbg = Image('texture/hud_bottom.png')
+        self.projectile = None
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
@@ -84,6 +86,7 @@ class Game(object):
         self.angle = [60, 60]
         self.force = [50, 50]
         self.player = 0
+        self.firing = False
 
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
@@ -121,6 +124,19 @@ class Game(object):
             return self.quit()
         if event.key == 27: # esc
             return self.quit()
+        if event.key == 13: # enter
+            self.fire()
+
+    @event(pygame.MOUSEBUTTONDOWN)
+    def on_button(self, event):
+        if not self.firing:
+            if event.button == 4: self.camera.x += 5
+            if event.button == 5: self.camera.x -= 5
+
+    def fire(self):
+        if not self.firing:
+            self.firing = True
+            self.projectile = item.create('projectile', name='projectile', x=6, y=-10)
 
     def poll(self):
         global event_table
@@ -133,17 +149,18 @@ class Game(object):
     def update(self):
         key = pygame.key.get_pressed()
 
-        if key[260]: self.camera.x -= 1
-        if key[262]: self.camera.x += 1
+        if not self.firing:
+            if key[260]: self.camera.x -= 1
+            if key[262]: self.camera.x += 1
 
-        if key[273]: self.angle[self.player] += 1
-        if key[274]: self.angle[self.player] -= 1
-        if key[275]: self.force[self.player] += 1
-        if key[276]: self.force[self.player] -= 1
+            if key[273]: self.angle[self.player] += 1
+            if key[274]: self.angle[self.player] -= 1
+            if key[275]: self.force[self.player] += 1
+            if key[276]: self.force[self.player] -= 1
 
-        self.camera.x = min(max(self.camera.x, 0), self.camera_max)
-        self.angle[self.player] = min(max(self.angle[self.player], 0), 90)
-        self.force[self.player] = min(max(self.force[self.player], 0), 200)
+            self.camera.x = min(max(self.camera.x, 0), self.camera_max)
+            self.angle[self.player] = min(max(self.angle[self.player], 0), 90)
+            self.force[self.player] = min(max(self.force[self.player], 0), 200)
 
         dt = 1.0 / self.clock.tick(60)
         self.map.update()
@@ -200,7 +217,7 @@ class Game(object):
 
             # parallax background
             pm = Matrix.transform(
-                self.camera.x * 0.35 - 20, self.camera.y * 0.5 - 12, 0,
+                0.75 * self.camera.x, self.camera.y * 0.5 - 12, 0,
                 (19*4) * self.parallax_rep, 19, 0
             )
             self.shader_hud.bind()
@@ -216,6 +233,9 @@ class Game(object):
             # entities
             for obj in self.map.obj:
                 obj.draw()
+
+            if self.firing:
+                self.projectile.draw()
 
     def render(self):
         glClearColor(1,0,1,1)

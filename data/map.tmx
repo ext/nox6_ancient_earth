@@ -8,17 +8,12 @@
  </tileset>
  <layer name="Tile Layer 1" width="200" height="20">
   <data encoding="base64" compression="zlib">
-   eJztmElLxTAUhfseqCsXVhdOK8HZnTg93TiPG3+e+ked8RReIMSkQ5r0RnsOfDy4gd6Uc89r2iyjlAaEGFCykvafMB8pS9p/wnykLGn/CfORsqT9J8xHypL2nzAfKUvaf8J8pCxp/wnzkbKk/SfMR8qS9p8wHylL2n/CfKQsaf/Jb1bBGlgv8S2WZsEcGAr0TlGhPH0Fb+AdfIDPgNfuG3tgHxyU+BZSeiZyDSqcp1NgwmA64PX7xCW4AtclvoWQykXuQGnG+HWpav0vKlQuTsAhOAIjcDyu/cesFPc8aaDu7wk8g5dAvYYRceVCEbO3L10rRDbuwQO4AbfgzlKLlRHbcytmHlU25sECWARLYDlzZ6YNVTPcN7pW27nU58M2M3qt7ey6suDqFysbO2ADbIItsF1Sa5sT6XlMja7lO6PFXuvMh63WNCeqZ9N+IZ8hxR70c6PtLFlW891L0z62GuUvn/9uH49stSJj5+ACPBr9TsHZeD337BfivKO/a9jOjXVruUfvgUcfW43yV90ZaeuRraZ/518xeu4a6yH6mVnRv0V/ge/M/u5ddW6sW/PJ6A8woVZh
+   eJztmDlPw0AUhE0koKLAUHBVSNx0NFxNgIKr4ecBf5RbjKWstFqt4z39Ns6M9CnSs+K3qzcTr1NVlNICGRyuiv0+lUfS/hk6sXOgZCXtn6ETOwdKVtL+IWnyReWR9PwJ81GypOdPmI+SJT1/wnyULOn5E+ajZEnPnzAfJUt6/oQ5KFnSviDMR8mS9gUpKx9rYB2MpBdSiFLN9wN8gi/wDX4S3nsekJSeiVqDSjffZbBosJLw/kNHQioXdQtKq8Znm7quz6JS5eIanIMLcAmuJrUhZqXZ85KB2t8reAPviXqNMtKWC0XO3qH0rRTZeALP4B48gEdLLVdGbM+tnHlU2dgAm2ALbIOdqj0zMZ7v8vC80bdifan7w+YZvRbr3bYstPXLlY1TcAiOwDE4mVKz5UTaY7NM3wr1aLNWF3/Yar45UT19+6V8hjRr0M+NtrPktJq+Fh8/+Pax1ahwhfx2h8zIVmvmfwvuwIvRbwxuJtdDfeJ63nF5ZjTYzo2utVq7p89efPvYalS4XD0SOyNbbQ/sgwOwa/Q8M66n6GdmRf8v+hf8VfZ3765zo2tN9fVZ9z87Lltb
   </data>
  </layer>
  <objectgroup color="#ffff00" name="Player 1">
   <object id="36" name="Catapult 1" type="Catapult" x="36.5417" y="93.125" width="45.0833" height="26.875"/>
  </objectgroup>
- <objectgroup color="#aa0000" name="stage 2"/>
- <objectgroup color="#00ff00" name="stage 3"/>
- <imagelayer name="Image Layer 1" opacity="0.19">
-  <image source="texture/sky.png"/>
- </imagelayer>
  <objectgroup color="#ffffff" name="Lights">
   <object id="33" type="Light" x="406" y="69" width="10" height="10">
    <properties>
