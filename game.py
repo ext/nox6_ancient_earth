@@ -77,11 +77,11 @@ class Game(object):
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
-        self.shader = Shader.load('derp')
-        self.herp = Shader.load('herp')
+        self.shader = Shader.load('default')
+        self.post = Shader.load('post')
 
-        self.ambient_light = (0.2, 0.2, 0.2)
-        self.lights = [Light(Vector3f(55,-9,1), (1,0,1), 200, 1)]
+        self.ambient_light = (0.0, 0.0, 0.0)
+        self.lights = [Light(Vector3f(55,-9,1), (1,0,1), 50, 10)]
 
         self.map = Map('map.json')
         self.player = Player(Vector2f(55,-9))
@@ -254,7 +254,7 @@ class Game(object):
         Shader.upload_model(mat)
 
         self.fbo.bind_texture()
-        self.herp.bind()
+        self.post.bind()
         self.quad.draw()
 
         # messagebox

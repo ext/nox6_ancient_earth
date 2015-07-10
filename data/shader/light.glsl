@@ -9,11 +9,17 @@ vec3 light_diffuse(in vec3 N, in vec3 L){
 	return vec3(1,1,1) * max(dot(N, L), 0.0);
 }
 
+float attenuation(float light_radius, float light_falloff, float dist) {
+	return pow(max(0.0, 1.0 - (dist / light_radius)), light_falloff);
+}
+
 vec4 calculate_light(in vec4 color, in vec2 P, in vec3 N){
 	vec3 acc = color.rgb * ambient.rgb;
 	for ( uint i = 0; i < num_lights; i++ ){
-		vec3 L = normalize(vec3(lights[i].pos.xy - P, lights[i].pos.z));
-		acc += light_diffuse(N, L);
+		vec3 dir = vec3(lights[i].pos.xy - P, lights[i].pos.z);
+		float distance = length(dir);
+		float attn = attenuation(lights[i].radius, lights[i].falloff, distance);
+		acc += light_diffuse(N, normalize(dir)) * attn;
 	}
 	return vec4(acc * color.rgb, color.a);
 }
