@@ -81,7 +81,7 @@ class Shader(object):
 
     uproj = None
     umodel = None
-    uplayer = None
+    ugame = None
     ulight = None
     lut = {}
 
@@ -170,12 +170,11 @@ class Shader(object):
         Shader.umodel.upload((0*s, s, mat))
 
     @staticmethod
-    def upload_player(player):
-        Shader.uplayer.upload((0,   4*2, np.array(player.pos.xy, np.float32)))
-        Shader.uplayer.upload((4*2, 4*2, np.array([53,-8], np.float32)))
-        Shader.uplayer.upload((4*4, 4*1, np.array(pygame.time.get_ticks() / 1000.0, np.float32)))
-        Shader.uplayer.upload((4*5, 4*1, np.array(player.hp_ratio, np.float32)))
-        Shader.uplayer.upload((4*6, 4*1, np.array(game.killfade2, np.float32)))
+    def upload_game(player):
+        Shader.ugame.upload((0,   4*2, np.array(player.pos.xy, np.float32)))
+        Shader.ugame.upload((4*2, 4*1, np.array(pygame.time.get_ticks() / 1000.0, np.float32)))
+        Shader.ugame.upload((4*3, 4*1, np.array(player.hp_ratio, np.float32)))
+        Shader.ugame.upload((4*4, 4*1, np.array(game.killfade2, np.float32)))
 
     @staticmethod
     def upload_light(ambient, lights):
@@ -200,7 +199,7 @@ class Shader(object):
 
         Shader.uproj = UniformBlock('projectionViewMatrices', 4*16*3)
         Shader.umodel = UniformBlock('modelMatrices', 4*16*1)
-        Shader.uplayer = UniformBlock('player', 4*7)
+        Shader.ugame = UniformBlock('game', 4*5)
         Shader.ulight = UniformBlock('light', Shader.lightbuffer_size(Shader.max_lights))
 
         for i in range(2):

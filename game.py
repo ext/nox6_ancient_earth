@@ -212,7 +212,7 @@ class Game(object):
             frame.clear(0,0.03,0.15,1)
 
             Shader.upload_projection_view(self.projection, view)
-            Shader.upload_player(self.player)
+            Shader.upload_game(self.player)
             Shader.upload_light(self.ambient_light, self.cull_lights())
             self.shader.bind()
 

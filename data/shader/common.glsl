@@ -30,9 +30,8 @@ layout(std140) uniform modelMatrices {
    mat4 modelMatrix;
 };
 
-layout(std140) uniform player {
+layout(std140) uniform game {
 	vec2 player_pos;
-	vec2 house_pos;
 	float time;
 	float hp;
 	float fade;
