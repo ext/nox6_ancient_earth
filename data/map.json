@@ -13,101 +13,126 @@
         }, 
         {
          "color":"#ffff00",
+         "draworder":"topdown",
          "height":100,
          "name":"stage 1",
          "objects":[
                 {
                  "height":8,
+                 "id":1,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
-                 "x":656,
-                 "y":56
+                 "x":554.333333333333,
+                 "y":36.6666666666667
                 }, 
                 {
                  "height":8,
+                 "id":2,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":816,
                  "y":152
                 }, 
                 {
                  "height":8,
+                 "id":3,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1136,
                  "y":120
                 }, 
                 {
                  "height":8,
+                 "id":4,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1808,
                  "y":144
                 }, 
                 {
                  "height":8,
+                 "id":5,
                  "name":"key",
                  "properties":
                     {
                      "texture":"texture\/key.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":1632,
                  "y":328
                 }, 
                 {
                  "height":8,
+                 "id":6,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1904,
                  "y":192
                 }, 
                 {
                  "height":8,
+                 "id":7,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1992,
                  "y":208
                 }, 
                 {
                  "height":8,
+                 "id":8,
                  "name":"ham",
                  "properties":
                     {
                      "texture":"texture\/ham.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":3328,
                  "y":296
@@ -121,53 +146,66 @@
         }, 
         {
          "color":"#aa0000",
+         "draworder":"topdown",
          "height":100,
          "name":"stage 2",
          "objects":[
                 {
                  "height":8,
+                 "id":9,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1424,
                  "y":104
                 }, 
                 {
                  "height":8,
+                 "id":10,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":512,
                  "y":64
                 }, 
                 {
                  "height":8,
+                 "id":11,
                  "name":"chainsaw",
                  "properties":
                     {
                      "texture":"texture\/chainsaw.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":424,
                  "y":64
                 }, 
                 {
                  "height":8,
+                 "id":12,
                  "name":"Gnocchi",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"food",
+                 "visible":true,
                  "width":8,
                  "x":1784,
                  "y":128
@@ -181,125 +219,156 @@
         }, 
         {
          "color":"#00ff00",
+         "draworder":"topdown",
          "height":100,
          "name":"stage 3",
          "objects":[
                 {
                  "height":8,
+                 "id":13,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":752,
                  "y":152
                 }, 
                 {
                  "height":8,
+                 "id":14,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":1392,
                  "y":104
                 }, 
                 {
                  "height":8,
+                 "id":15,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":1924,
                  "y":196
                 }, 
                 {
                  "height":8,
+                 "id":16,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":2736,
                  "y":184
                 }, 
                 {
                  "height":8,
+                 "id":17,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":2896,
                  "y":136
                 }, 
                 {
                  "height":8,
+                 "id":18,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":3016,
                  "y":104
                 }, 
                 {
                  "height":8,
+                 "id":19,
                  "name":"asdf",
                  "properties":
                     {
 
                     },
+                 "rotation":0,
                  "type":"kebab",
+                 "visible":true,
                  "width":8,
                  "x":3680,
                  "y":112
                 }, 
                 {
                  "height":8,
+                 "id":20,
                  "name":"bread",
                  "properties":
                     {
                      "texture":"texture\/bread.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":4272,
                  "y":128
                 }, 
                 {
                  "height":8,
+                 "id":21,
                  "name":"cheese",
                  "properties":
                     {
                      "texture":"texture\/cheese.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":3088,
                  "y":680
                 }, 
                 {
                  "height":8,
+                 "id":22,
                  "name":"something",
                  "properties":
                     {
                      "texture":"texture\/something.png"
                     },
+                 "rotation":0,
                  "type":"key",
+                 "visible":true,
                  "width":8,
                  "x":2640,
                  "y":424
@@ -311,11 +380,13 @@
          "x":0,
          "y":0
         }],
+ "nextobjectid":23,
  "orientation":"orthogonal",
  "properties":
     {
 
     },
+ "renderorder":"right-down",
  "tileheight":8,
  "tilesets":[
         {
@@ -327,7 +398,7 @@
          "name":"tiles",
          "properties":
             {
-
+             "normalmap":"texture\/tiles_normal.png"
             },
          "spacing":0,
          "tileheight":8,

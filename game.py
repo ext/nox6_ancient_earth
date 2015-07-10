@@ -214,7 +214,7 @@ class Game(object):
 
             # temp hack, move light 0 to player pos
             self.lights[0].pos.x = self.player.pos.x
-            self.lights[0].pos.y = self.player.pos.y
+            self.lights[0].pos.y = self.player.pos.y + 2
 
             Shader.upload_projection_view(self.projection, view)
             Shader.upload_player(self.player)

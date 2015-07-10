@@ -27,7 +27,7 @@ class Map(object):
         tile_div = 128 / self.tile_width
 
         # load tilemap
-        self.texture = Image(data['tilesets'][0]['image'], filter=GL_NEAREST)
+        self.load_tileset(data['tilesets'])
 
         n = len(data['layers'][0]['data'])
         ver = np.zeros((n*4, 5), np.float32)
@@ -57,6 +57,14 @@ class Map(object):
 
         self.pickups = []
 
+    def load_tileset(self, data):
+        self.texture = []
+        self.normal = []
+        for tileset in data:
+            props = tileset.get('properties', {})
+            self.texture.append(Image(tileset['image'], filter=GL_NEAREST))
+            self.normal.append(Image(props.get('normalmap', 'texture/default_normal.png'), filter=GL_NEAREST))
+
     @staticmethod
     def twiddle(src):
         for obj in src:
@@ -64,7 +72,10 @@ class Map(object):
 
     def draw(self, *args, **kwargs):
         Shader.upload_model(Matrix.identity())
-        self.texture.texture_bind()
+        glActiveTexture(GL_TEXTURE1)
+        self.normal[0].texture_bind()
+        glActiveTexture(GL_TEXTURE0)
+        self.texture[0].texture_bind()
         self.vbo.draw(*args, **kwargs)
 
     def tile_at(self, pos):
