@@ -78,6 +78,7 @@ class UniformBlock(object):
 
 class Shader(object):
     max_lights = 12 # hardcoded in common.glsl
+    light_size = 12 # defined in common.glsl
 
     uproj = None
     umodel = None
@@ -186,12 +187,12 @@ class Shader(object):
 
         offset = 4*8
         for light in lights:
-            Shader.ulight.upload((offset, 4*12, light.shader_data()))
-            offset += 4*12
+            Shader.ulight.upload((offset, 4*Shader.light_size, light.shader_data()))
+            offset += 4*Shader.light_size
 
     @staticmethod
     def lightbuffer_size(num_lights):
-        return 4*4 + 12*4*num_lights
+        return 4*4 + 4*Shader.light_size*num_lights
 
     @staticmethod
     def initialize():

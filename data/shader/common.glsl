@@ -42,6 +42,8 @@ struct light_data {
 	vec4 color;
 	float radius;
 	float falloff;
+	float phase_offset;
+	float phase_freq;
 };
 
 layout(std140) uniform light {

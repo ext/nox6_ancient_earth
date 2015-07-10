@@ -1,11 +1,13 @@
 import numpy as np
 
 class Light(object):
-    def __init__(self, pos, color, radius, falloff):
+    def __init__(self, pos, color, radius, falloff, phase_offset, phase_freq):
         self.pos = pos
         self.color = color
         self.radius = radius
         self.falloff = falloff
+        self.phase_offset = phase_offset
+        self.phase_freq = phase_freq
 
     def shader_data(self):
         data = []
@@ -13,5 +15,5 @@ class Light(object):
         data += list(self.color) + [0]
         data += [self.radius]
         data += [self.falloff]
-        data += [0,0] # fill struct padding
+        data += [self.phase_offset, self.phase_freq]
         return np.array(data, np.float32)

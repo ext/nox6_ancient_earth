@@ -138,10 +138,12 @@ class LightStub(Light):
         color = LightStub.parse_color(properties.get('Color', ''), (1,1,1))
         radius = LightStub.parse_float(properties.get('Radius', ''), 50)
         falloff = LightStub.parse_float(properties.get('Falloff', ''), 10)
+        phase_offset = LightStub.parse_float(properties.get('Phase Offset', ''), 10)
+        phase_freq = LightStub.parse_float(properties.get('Phase Frequency', ''), 10)
         pos = Vector3f(x, -y) * (1.0 / 8)
         pos.z = 1
 
-        Light.__init__(self, pos, color, radius, falloff)
+        Light.__init__(self, pos, color, radius, falloff, phase_offset, phase_freq)
         self.name = name
 
     def draw(self):

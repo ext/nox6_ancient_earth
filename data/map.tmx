@@ -71,6 +71,8 @@
    <properties>
     <property name="Color" value="(1,1,1)"/>
     <property name="Falloff" value="10"/>
+    <property name="Phase Frequency" value="5"/>
+    <property name="Phase offset" value="0"/>
     <property name="Radius" value="100"/>
    </properties>
   </object>
@@ -78,6 +80,8 @@
    <properties>
     <property name="Color" value="(1,1,1)"/>
     <property name="Falloff" value="10"/>
+    <property name="Phase Frequency" value="15"/>
+    <property name="Phase offset" value="0"/>
     <property name="Radius" value="500"/>
    </properties>
   </object>
@@ -85,6 +89,8 @@
    <properties>
     <property name="Color" value="(1,1,1)"/>
     <property name="Falloff" value="10"/>
+    <property name="Phase Frequency" value="50"/>
+    <property name="Phase offset" value="0"/>
     <property name="Radius" value="1000"/>
    </properties>
   </object>
