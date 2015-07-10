@@ -6,6 +6,8 @@ import traceback
 import os
 from OpenGL.GL import *
 from OpenGL.GLU import *
+from render.vbo import VBO
+import numpy as np
 
 lut = {}
 def load(filename, *args, **kwargs):
@@ -42,3 +44,35 @@ class Image(object):
 
     def texture_bind(self):
         glBindTexture(GL_TEXTURE_2D, self.id)
+
+sprite_quad = None
+def setup():
+    global sprite_quad
+    v = np.array([
+        0,0,0, 0,1,
+        1,0,0, 1,1,
+        1,1,0, 1,0,
+        0,1,0, 0,0,
+    ], np.float32)
+    i = np.array([0,1,2,3], np.uint32)
+    sprite_quad = VBO(GL_QUADS, v, i)
+
+class Sprite(Image):
+    def __init__(self, diffuse=None, normal=None):
+        # other classes sometimes explicitly passes None as argument so cannot
+        # use default arguments here
+        if diffuse is None: diffuse='texture/default_diffuse.png'
+        if normal is None: normal='texture/default_normal.png'
+
+        self.diffuse = load(diffuse)
+        self.normal = load(normal)
+
+    def texture_bind(self):
+        glActiveTexture(GL_TEXTURE1)
+        self.normal.texture_bind()
+        glActiveTexture(GL_TEXTURE0)
+        self.diffuse.texture_bind()
+
+    def draw(self):
+        self.texture_bind()
+        sprite_quad.draw()

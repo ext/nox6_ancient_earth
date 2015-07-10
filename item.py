@@ -28,26 +28,38 @@ def create(typename, *args, **kwargs):
     raise KeyError, 'no item type named %s' % typename
 
 class Item(object):
-    def __init__(self, name, x, y, **kwargs):
+    diffuse = None # use sprite default
+    normal = None  # use sprite default
+
+    def __init__(self, name, x, y, properties={}, **kwargs):
         self.name = name
         self.pos = Vector2f(x,-y) * (1.0 / 8)
         self.mat = Matrix.translate(self.pos.x, self.pos.y)
         self.killed = False
 
+        if 'texture' in properties:
+            self.diffuse = properties['texture']
+
+        self.load_sprite(self.diffuse, self.normal)
+
+    def load_sprite(self, *args, **kwargs):
+        self.sprite = image.Sprite(*args, **kwargs)
+
     def draw(self, q):
         Shader.upload_model(self.mat)
-        self.texture.texture_bind()
-        q.draw()
+        self.sprite.draw()
 
     def kill(self):
         self.killed = True
 
 @register_type('food')
 class Food(Item):
+    diffuse = 'texture/examplehead_diffuse.png'
+    normal = 'texture/examplehead_normal.png'
+
     def __init__(self, **kwargs):
         Item.__init__(self, **kwargs)
         self.hp = 35
-        self.texture = image.load('texture/apple.png')
 
     def kill(self):
         Item.kill(self)
@@ -55,10 +67,11 @@ class Food(Item):
 
 @register_type('kebab')
 class Schebab(Item):
+    diffuse = 'texture/kebab.png'
+
     def __init__(self, **kwargs):
         Item.__init__(self, **kwargs)
         self.hp = 50
-        self.texture = image.load('texture/kebab.png')
 
     def kill(self):
         Item.kill(self)
@@ -69,7 +82,6 @@ class QuestItem(Item):
     def __init__(self, properties, **kwargs):
         Item.__init__(self, **kwargs)
         self.hp = 25
-        self.texture = image.load(properties['texture'])
 
     def kill(self):
         Item.kill(self)

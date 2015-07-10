@@ -15,6 +15,7 @@ from utils.vector import Vector2i, Vector2f
 from map import Map
 from player import Player
 import math
+import render.image as image
 
 event_table = {}
 def event(type):
@@ -44,6 +45,8 @@ class Game(object):
         glDisable(GL_CULL_FACE)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA)
+
+        image.setup()
 
         self.stage = 1
         self.projection = Matrix.perspective(75, self.size, 0.1, 100)
