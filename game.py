@@ -27,7 +27,7 @@ def event(type):
 class Game(object):
     def __init__(self):
         self._running = False
-        self.camera = Vector2f(19,-11)
+        self.camera = Vector2f(0,-11)
 
     def init(self, size, fullscreen=False):
         flags = OPENGL|DOUBLEBUF
@@ -85,8 +85,10 @@ class Game(object):
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
         self.hud = HUD(Vector2i(500,100))
+        self.scrollbar = HUD(Vector2i(self.size.x,8))
         self.font = self.hud.create_font(size=16)
         self.font2 = self.hud.create_font(size=12)
+        self.camera_max = self.map.width - 36
 
         self.land = pygame.mixer.Sound('data/sound/land.wav')
         self.ding = pygame.mixer.Sound('data/sound/ding.wav')
@@ -127,10 +129,10 @@ class Game(object):
     def update(self):
         key = pygame.key.get_pressed()
 
-        if key[260]: self.camera.x -= 0.1
-        if key[262]: self.camera.x += 0.1
-        if key[258]: self.camera.y -= 0.1
-        if key[264]: self.camera.y += 0.1
+        if key[260]: self.camera.x -= 1
+        if key[262]: self.camera.x += 1
+
+        self.camera.x = min(max(self.camera.x, 0), self.camera_max)
 
         dt = 1.0 / self.clock.tick(60)
         self.map.update()
@@ -152,10 +154,16 @@ class Game(object):
                 self.hud.cr.translate(0,25)
                 self.hud.text(self.text, self.font, color=(1,0.8,0,a), width=self.hud.width, alignment=ALIGN_CENTER)
 
+        visible = 34. / self.camera_max
+        offset = self.camera.x / float(self.camera_max + 42.0)
+        with self.scrollbar as hud:
+            hud.clear((1,0,1,0))
+            hud.rectangle(self.size.x * offset, 0, self.size.x * visible, hud.height, (0,1,1,1))
+
     def render_world(self):
         view = Matrix.lookat(
-            self.camera.x, self.camera.y, 15,
-            self.camera.x, self.camera.y, 0,
+            self.camera.x + 19, self.camera.y, 15,
+            self.camera.x + 19, self.camera.y, 0,
             0,1,0)
 
         with self.fbo as frame:
@@ -200,9 +208,10 @@ class Game(object):
         self.quad.draw()
 
         # hud background
+        y = self.size.x * (160./800)
         pm = Matrix.transform(
-            0, 0, 0,
-            self.size.x, self.size.x * (160./800), 1
+            0, y, 0,
+            self.size.x, -y, 1
         )
         self.shader_hud.bind()
         self.hudbg.texture_bind()
@@ -213,6 +222,11 @@ class Game(object):
         mat = Matrix.translate(self.size.x / 2 - self.hud.width / 2, self.size.y - self.hud.height)
         Shader.upload_model(mat)
         self.hud.draw()
+
+        # scrollbar
+        mat = Matrix.translate(0, y-8-2)
+        Shader.upload_model(mat)
+        self.scrollbar.draw()
 
         pygame.display.flip()
 
