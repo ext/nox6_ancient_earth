@@ -11,8 +11,9 @@ from vbo import VBO
 from pango import ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT
 
 class HUD:
-    def __init__(self, size):
+    def __init__(self, size, name):
         self.width, self.height = size.xy
+        self.name = name # for debugging only
 
         self.data = array.array('c', chr(0) * self.width * self.height * 4)
 
