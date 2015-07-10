@@ -12,7 +12,7 @@ def register_type(cls_or_name):
     name = None
     def inner(cls, *args, **kwargs):
         global type_register
-        type_register[name] = cls
+        type_register[name.lower()] = cls
         return cls
 
     if isinstance(cls_or_name, (type, types.ClassType)):
@@ -23,6 +23,7 @@ def register_type(cls_or_name):
         return inner
 
 def create(typename, *args, **kwargs):
+    typename = typename.lower()
     if typename in type_register:
         return type_register[typename](*args, **kwargs)
     raise KeyError, 'no item type named %s' % typename
