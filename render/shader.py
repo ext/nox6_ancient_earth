@@ -188,8 +188,7 @@ class Shader(object):
         offset = 4*8
         for light in lights:
             Shader.ulight.upload((offset, 4*12, light.shader_data()))
-            offset += 12
-
+            offset += 4*12
 
     @staticmethod
     def lightbuffer_size(num_lights):

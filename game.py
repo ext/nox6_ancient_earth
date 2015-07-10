@@ -81,7 +81,6 @@ class Game(object):
         self.post = Shader.load('post')
 
         self.ambient_light = (0.0, 0.0, 0.0)
-        self.lights = [Light(Vector3f(55,-9,1), (1,0,1), 50, 10)]
 
         self.map = Map('map.json')
         self.player = Player(Vector2f(55,-9))
@@ -212,13 +211,9 @@ class Game(object):
         with self.fbo as frame:
             frame.clear(0,0.03,0.15,1)
 
-            # temp hack, move light 0 to player pos
-            self.lights[0].pos.x = self.player.pos.x
-            self.lights[0].pos.y = self.player.pos.y + 2
-
             Shader.upload_projection_view(self.projection, view)
             Shader.upload_player(self.player)
-            Shader.upload_light(self.ambient_light, self.lights)
+            Shader.upload_light(self.ambient_light, self.cull_lights())
             self.shader.bind()
 
             # parallax background
@@ -270,6 +265,9 @@ class Game(object):
         Shader.unbind()
 
         pygame.display.flip()
+
+    def cull_lights(self):
+        return self.map.objects['Lights']
 
     def run(self):
         self._running = True

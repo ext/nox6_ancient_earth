@@ -19,7 +19,7 @@ vec4 calculate_light(in vec4 color, in vec2 P, in vec3 N){
 		vec3 dir = vec3(lights[i].pos.xy - P, lights[i].pos.z);
 		float distance = length(dir);
 		float attn = attenuation(lights[i].radius, lights[i].falloff, distance);
-		acc += light_diffuse(N, normalize(dir)) * attn;
+		acc += light_diffuse(N, normalize(dir)) * lights[i].color.rgb * attn;
 	}
 	return vec4(acc * color.rgb, color.a);
 }

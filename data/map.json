@@ -14,7 +14,7 @@
         {
          "color":"#ffff00",
          "draworder":"topdown",
-         "height":100,
+         "height":0,
          "name":"stage 1",
          "objects":[
                 {
@@ -29,8 +29,8 @@
                  "type":"food",
                  "visible":true,
                  "width":8,
-                 "x":554.333333333333,
-                 "y":36.6666666666667
+                 "x":554.333,
+                 "y":36.6667
                 }, 
                 {
                  "height":8,
@@ -140,14 +140,14 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":550,
+         "width":0,
          "x":0,
          "y":0
         }, 
         {
          "color":"#aa0000",
          "draworder":"topdown",
-         "height":100,
+         "height":0,
          "name":"stage 2",
          "objects":[
                 {
@@ -213,14 +213,14 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":550,
+         "width":0,
          "x":0,
          "y":0
         }, 
         {
          "color":"#00ff00",
          "draworder":"topdown",
-         "height":100,
+         "height":0,
          "name":"stage 3",
          "objects":[
                 {
@@ -376,11 +376,86 @@
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
-         "width":550,
+         "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "height":0,
+         "image":"texture\/sky.png",
+         "name":"Image Layer 1",
+         "opacity":0.189999997615814,
+         "type":"imagelayer",
+         "visible":true,
+         "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "color":"#ffffff",
+         "draworder":"topdown",
+         "height":0,
+         "name":"Lights",
+         "objects":[
+                {
+                 "height":10,
+                 "id":33,
+                 "name":"",
+                 "properties":
+                    {
+                     "Color":"(1,1,1)",
+                     "Falloff":"10",
+                     "Radius":"100"
+                    },
+                 "rotation":0,
+                 "type":"Light",
+                 "visible":true,
+                 "width":10,
+                 "x":406,
+                 "y":69
+                }, 
+                {
+                 "height":10,
+                 "id":34,
+                 "name":"",
+                 "properties":
+                    {
+                     "Color":"(1,1,1)",
+                     "Falloff":"10",
+                     "Radius":"500"
+                    },
+                 "rotation":0,
+                 "type":"Light",
+                 "visible":true,
+                 "width":10,
+                 "x":464.666666666667,
+                 "y":69.3333333333333
+                }, 
+                {
+                 "height":10,
+                 "id":35,
+                 "name":"",
+                 "properties":
+                    {
+                     "Color":"(1,1,1)",
+                     "Falloff":"10",
+                     "Radius":"1000"
+                    },
+                 "rotation":0,
+                 "type":"Light",
+                 "visible":true,
+                 "width":10,
+                 "x":529,
+                 "y":69.3333333333333
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":0,
          "x":0,
          "y":0
         }],
- "nextobjectid":23,
+ "nextobjectid":36,
  "orientation":"orthogonal",
  "properties":
     {

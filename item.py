@@ -3,8 +3,11 @@ from utils.matrix import Matrix
 from utils.vector import Vector2f
 from OpenGL.GL import *
 import render.image as image
+from render.light import Light
 from player import Player
+from utils.vector import Vector3f
 import types
+import re
 
 type_register = {}
 
@@ -128,3 +131,31 @@ class QuestItem(Item):
             game.message('Quest finished: "Frobnicate something".')
         else:
             raise ValueError, 'unknown questitem %s' % self.name
+
+@register_type('light')
+class LightStub(Light):
+    def __init__(self, name, x, y, properties={}, **kwargs):
+        color = LightStub.parse_color(properties.get('Color', ''), (1,1,1))
+        radius = LightStub.parse_float(properties.get('Radius', ''), 50)
+        falloff = LightStub.parse_float(properties.get('Falloff', ''), 10)
+        pos = Vector3f(x, -y) * (1.0 / 8)
+        pos.z = 1
+
+        Light.__init__(self, pos, color, radius, falloff)
+        self.name = name
+
+    def draw(self):
+        pass
+
+    @staticmethod
+    def parse_color(string, default):
+        m = re.match('\((\d),(\d),(\d)\)', string.strip())
+        return default
+
+    @staticmethod
+    def parse_float(string, default):
+        string = string.strip()
+        if len(string) > 0:
+            return float(string)
+        else:
+            return default

@@ -9,10 +9,9 @@ class Light(object):
 
     def shader_data(self):
         data = []
-        data += list(self.pos.xyz) + [0]
+        data += list((self.pos).xyz) + [0]
         data += list(self.color) + [0]
         data += [self.radius]
         data += [self.falloff]
         data += [0,0] # fill struct padding
-
         return np.array(data, np.float32)
