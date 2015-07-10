@@ -236,7 +236,7 @@ class Game(object):
 
             # entities
             for obj in self.map.pickups:
-                obj.draw(self.quad)
+                obj.draw()
             self.player.draw()
 
             # parallax 2

@@ -53,7 +53,7 @@ class Item(object):
     def load_sprite(self, *args, **kwargs):
         self.sprite = image.Sprite(*args, **kwargs)
 
-    def draw(self, q):
+    def draw(self):
         Shader.upload_model(self.mat)
         self.shader.bind()
         self.sprite.draw()
