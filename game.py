@@ -7,7 +7,7 @@ from OpenGL.GLU import *
 
 from render.fbo import FBO
 from render.hud import HUD, ALIGN_CENTER
-from render.image import Image
+from render.image import Image, Sprite
 from render.shader import Shader
 from render.vbo import VBO
 from render.light import Light
@@ -189,7 +189,7 @@ class Game(object):
             self.map.draw()
 
             # entities
-            for obj in self.map.pickups:
+            for obj in self.map.obj:
                 obj.draw()
 
     def render(self):
@@ -253,8 +253,8 @@ def run():
     # superglobals for quick access
     __builtins__['game'] = game
 
-    #game.init(Vector2i(800,600), fullscreen=False)
-    game.init(Vector2i(0,0), fullscreen=True)
+    game.init(Vector2i(800,600), fullscreen=False)
+    #game.init(Vector2i(0,0), fullscreen=True)
     game.run()
 
     # force deallocation

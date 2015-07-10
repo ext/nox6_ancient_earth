@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="20" tilewidth="8" tileheight="8" nextobjectid="36">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="20" tilewidth="8" tileheight="8" nextobjectid="38">
  <tileset firstgid="1" name="tiles" tilewidth="8" tileheight="8">
   <properties>
    <property name="normalmap" value="texture/tiles_normal.png"/>
@@ -8,10 +8,12 @@
  </tileset>
  <layer name="Tile Layer 1" width="200" height="20">
   <data encoding="base64" compression="zlib">
-   eJztmLlOxEAQRL0rARGJIeCKkLjJSLgSjoAr4fOAH+UWZWlHGo3GXrs9427hKuklvZLLq+paj7coKKcJIQGUrrTzJ+yHZWnnT9gPy9LOn7AflqWdP2E/LEs7f8J+WJZ2/oT9sCzt/An7YVna+RP2w7K08yfsh2Vp50/YD8vSzp/Y6scKWAVTBW+LSpXjO/gAn+ALfCe89pgZQn4nSg8qXY5LYCFgOeH1x0pOuV6UNVDpenEJTsEZOAcXs9l/7Er1nRcD3Pd7Aa/gLZHXNCN1vXDk9JYytFJ04xE8gTtwDx4is1wdiT23cvbRdWMNrIMNsAm2ivrO9GHeDo+NodV3L/39iO2MP+u7u3VdqPPL1Y1jsA8OwCE4apj17Ulbn6YZJZd0R6suS3Pr2hPn2dUv5TOkugf/3Bg7SzbNpPfS1Sc2o+SS/HZLMorNqo7dgFvwHPhdgevZ56XQL8V5x3/XiJ0b285KgfdE4BObUXK13ZG+GcVmO2AX7IHtwPMk+DyFX9gV/7/oH/BbxN+9550b284kHf0DR3lSUA==
+   eJztmElLxTAUhfseqCsXVhdOK8HZnTg93TiPG3+e+ked8RReIMSkQ5r0RnsOfDy4gd6Uc89r2iyjlAaEGFCykvafMB8pS9p/wnykLGn/CfORsqT9J8xHypL2nzAfKUvaf8J8pCxp/wnzkbKk/SfMR8qS9p8wHylL2n/CfKQsaf/Jb1bBGlgv8S2WZsEcGAr0TlGhPH0Fb+AdfIDPgNfuG3tgHxyU+BZSeiZyDSqcp1NgwmA64PX7xCW4AtclvoWQykXuQGnG+HWpav0vKlQuTsAhOAIjcDyu/cesFPc8aaDu7wk8g5dAvYYRceVCEbO3L10rRDbuwQO4AbfgzlKLlRHbcytmHlU25sECWARLYDlzZ6YNVTPcN7pW27nU58M2M3qt7ey6suDqFysbO2ADbIItsF1Sa5sT6XlMja7lO6PFXuvMh63WNCeqZ9N+IZ8hxR70c6PtLFlW891L0z62GuUvn/9uH49stSJj5+ACPBr9TsHZeD337BfivKO/a9jOjXVruUfvgUcfW43yV90ZaeuRraZ/518xeu4a6yH6mVnRv0V/ge/M/u5ddW6sW/PJ6A8woVZh
   </data>
  </layer>
- <objectgroup color="#ffff00" name="stage 1"/>
+ <objectgroup color="#ffff00" name="Player 1">
+  <object id="36" name="Catapult 1" type="Catapult" x="36.5417" y="93.125" width="45.0833" height="26.875"/>
+ </objectgroup>
  <objectgroup color="#aa0000" name="stage 2"/>
  <objectgroup color="#00ff00" name="stage 3"/>
  <imagelayer name="Image Layer 1" opacity="0.19">
