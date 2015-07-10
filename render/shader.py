@@ -175,7 +175,7 @@ class Shader(object):
         Shader.ugame.upload((0,   4*2, np.array(player.pos.xy, np.float32)))
         Shader.ugame.upload((4*2, 4*1, np.array(pygame.time.get_ticks() / 1000.0, np.float32)))
         Shader.ugame.upload((4*3, 4*1, np.array(player.hp_ratio, np.float32)))
-        Shader.ugame.upload((4*4, 4*1, np.array(game.killfade2, np.float32)))
+        Shader.ugame.upload((4*4, 4*1, np.array(0, np.float32)))
 
     @staticmethod
     def upload_light(ambient, lights):

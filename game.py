@@ -73,7 +73,6 @@ class Game(object):
         i = np.array([0,1,2,3], np.uint32)
         self.repquad = VBO(GL_QUADS, v, i)
         self.parallax = Image('texture/sky.png', wrap=GL_REPEAT)
-        self.parallax2 = Image('texture/sky2.png', wrap=GL_REPEAT)
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
@@ -86,7 +85,6 @@ class Game(object):
         self.player = Player(Vector2f(55,-9))
         self.clock = pygame.time.Clock()
         self.hud = HUD(Vector2i(500,100))
-        self.hpmeter = HUD(Vector2i(20, 500))
         self.font = self.hud.create_font(size=16)
         self.font2 = self.hud.create_font(size=12)
 
@@ -97,16 +95,9 @@ class Game(object):
 
         self.wind.play(loops=-1)
 
-        self.set_stage(1)
-        self.killfade = None
-        self.killfade2 = 1.0 # fade amount
         self.textbuf = []
         self.texttime = -10.0
-        self.message('<b>Welcome adventurer!</b>\nYou can start exploring the world but beware of wandering away too far.')
-        self.message('When outside of lights your <i>HP</i> will drain and you will get lost in the woods.')
-        self.message('Eat food to temporary increase your <i>HP</i>.')
-        self.message('Quest started: "Find the chainsaw".')
-        self.message('Quest started: "Frobnicate something".')
+        self.message('<b>derp</b>\na herp.')
 
         with self.hud:
             self.hud.clear((0,1,1,1))
@@ -142,21 +133,6 @@ class Game(object):
             func(self, event)
 
     def update(self):
-        if self.killfade is not None:
-            t = pygame.time.get_ticks() / 1000.0
-            s = (t - self.killfade) / 2.5
-            self.killfade2 = 1.0 - s
-
-            if s > 1.0:
-                self.quit()
-
-            # so player keeps falling
-            dt = 1.0 / self.clock.tick(60)
-            self.player.vel.y = 0
-            self.player.update(dt, self.map)
-
-            return
-
         key = pygame.key.get_pressed()
 
         self.player.vel.x = 0
@@ -173,20 +149,7 @@ class Game(object):
         self.player.frobnicate(self.map.pickups)
         self.map.update()
 
-    def render(self):
-        glClearColor(1,0,1,1)
-        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
-
-        with self.hpmeter as hud:
-            hud.clear((0.3,0,0,1))
-            hud.cr.identity_matrix()
-
-            hud.rectangle(0,0, hud.width, hud.height * self.player.hp_ratio, (0,0.3,0,1))
-
-            hud.cr.translate(18,0)
-            hud.cr.rotate(math.pi*0.5)
-            hud.text(' Energy: %d / %d' % (int(math.ceil(self.player.hp/10)) * 10, Player.max_hp), self.font2, color=(1,0.8,0,1))
-
+    def render_hud(self):
         with self.hud:
             self.hud.clear((0,0,0,0))
             self.hud.cr.identity_matrix()
@@ -203,6 +166,7 @@ class Game(object):
                 self.hud.cr.translate(0,25)
                 self.hud.text(self.text, self.font, color=(1,0.8,0,a), width=self.hud.width, alignment=ALIGN_CENTER)
 
+    def render_world(self):
         view = Matrix.lookat(
             self.player.pos.x, self.player.pos.y+7, 15,
             self.player.pos.x, self.player.pos.y+7, 0,
@@ -217,12 +181,12 @@ class Game(object):
             self.shader.bind()
 
             # parallax background
-            pm1 = Matrix.transform(
+            pm = Matrix.transform(
                 self.player.pos.x * 0.35 - 20, self.player.pos.y * 0.5 - 20, 0,
                 42.0 * self.parallax_rep, 42.0, 0
             )
             self.parallax.texture_bind()
-            Shader.upload_model(pm1)
+            Shader.upload_model(pm)
             self.repquad.draw()
 
             Shader.upload_projection_view(self.projection, view)
@@ -234,15 +198,12 @@ class Game(object):
                 obj.draw()
             self.player.draw()
 
-            # parallax 2
-            pm1 = Matrix.transform(
-                self.player.pos.x * -2.0 + 100, self.player.pos.y * 0.5 - 45 * 3 + 10, 0,
-                45.0 * self.parallax_rep * 3, 45 * 3, 0
-            )
-            self.parallax2.texture_bind()
-            Shader.upload_model(pm1)
-            self.shader.bind()
-            self.repquad.draw()
+    def render(self):
+        glClearColor(1,0,1,1)
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
+        self.render_hud()
+        self.render_world()
 
         mat = Matrix.scale(self.size.x, self.size.y)
         Shader.upload_projection_view(self.ortho, Matrix.identity())
@@ -256,13 +217,6 @@ class Game(object):
         mat = Matrix.translate(self.size.x / 2 - self.hud.width / 2, self.size.y - self.hud.height)
         Shader.upload_model(mat)
         self.hud.draw()
-
-        # hpmeter
-        mat = Matrix.translate(0, self.size.y / 2 - self.hpmeter.height / 2)
-        Shader.upload_model(mat)
-        self.hpmeter.draw()
-
-        Shader.unbind()
 
         pygame.display.flip()
 
@@ -279,17 +233,6 @@ class Game(object):
     def message(self, text):
         self.textbuf.append(text)
 
-    def set_stage(self, n):
-        if n == 1:
-            self.map.pickups.extend(self.map.objects['stage 1'])
-        elif n == 2:
-            self.map.pickups.extend(self.map.objects['stage 2'])
-        elif n == 3:
-            self.map.pickups.extend(self.map.objects['stage 3'])
-
-    def over(self):
-        self.killfade = pygame.time.get_ticks() / 1000.0
-
 def run():
     pygame.display.init()
     pygame.mixer.init(channels=3, buffer=1024)
@@ -300,7 +243,7 @@ def run():
     # superglobals for quick access
     __builtins__['game'] = game
 
-    game.init(Vector2i(0,0), fullscreen=True)
+    game.init(Vector2i(800,600), fullscreen=False)
     game.run()
 
     # force deallocation
