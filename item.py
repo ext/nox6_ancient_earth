@@ -102,7 +102,7 @@ class PhysicsItem(Item):
 
         # reset acceleration and impulses
         gravity = -5.0
-        self.acceleration = sum([Vector2f(0, gravity)] + [a for a,_ in self.impulses], Vector2f(0,0))
+        self.acceleration = sum([Vector2f(game.wind, gravity)] + [a for a,_ in self.impulses], Vector2f(0,0))
         self.impulses = [(a, t-dt) for a,t in self.impulses if t-dt > 0]
 
         # update model matrix

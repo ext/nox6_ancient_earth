@@ -19,6 +19,7 @@ import math
 import render.image as image
 import item
 import traceback
+import random
 
 def lerp(a, b, s):
     return a + (b - a) * s
@@ -112,6 +113,8 @@ class Game(object):
         self.shader = Shader.load('default')
         self.shader_hud = Shader.load('hud')
         self.post = Shader.load('post')
+        self.windmax = 1.0
+        self.random_wind()
 
         self.ambient_light = (1.0, 1.0, 1.0)
 
@@ -121,7 +124,7 @@ class Game(object):
         self.clock = pygame.time.Clock()
         self.hud_msgbox = HUD(Vector2i(500,100), 'msgbox')
         self.hud_ui = HUD(Vector2i(self.size.x, self.size.x * (160./800)), 'ui')
-        self.scrollbar = HUD(Vector2i(self.size.x,8), 'scrollbar')
+        self.scrollbar = HUD(Vector2i(self.size.x,28), 'scrollbar')
         self.font = self.hud_msgbox.create_font(size=fontsize)
         self.font_ui = self.hud_ui.create_font(size=fontsize, font='Comic Sans MS')
         self.camera_max = self.map.width - 38
@@ -148,7 +151,7 @@ class Game(object):
     def reset(self):
         self.projectile = DummyProjectile()
         self.angle = [60, 60]
-        self.force = [50, 50]
+        self.force = [150, 150]
         self.player = 0
         self.firing = False
         self.sweep = None
@@ -158,6 +161,7 @@ class Game(object):
         self.textbuf = []
         self.texttime = -10.0
         self.catapults[0].set_loaded(True)
+        self.random_wind()
 
     @event(pygame.QUIT)
     def quit(self, event=None):
@@ -165,6 +169,12 @@ class Game(object):
 
     def over(self):
         self.is_over = True
+
+    def random_wind(self):
+        r = float(random.randint(0, 10000)) / 10000 # [0..1]
+        r = r * 2.0 - 1.0 # [-1..1]
+        self.wind = r * self.windmax
+        print self.wind
 
     @event(pygame.KEYDOWN)
     def on_keypress(self, event):
@@ -177,7 +187,8 @@ class Game(object):
                 self.reset()
                 return True
         if event.key == 13: # enter
-            self.projectile_fire()
+            if not self.firing and not self.sweep:
+                self.projectile_fire()
 
     @event(pygame.MOUSEBUTTONDOWN)
     def on_button(self, event):
@@ -191,6 +202,7 @@ class Game(object):
         self.sweep = CameraSweep(src=self.follow_cam, dst=self.camera_targets[self.player])
         self.follow_cam = None
         self.firing = False
+        self.random_wind()
 
     def projectile_fire(self):
         if not self.firing:
@@ -299,8 +311,10 @@ class Game(object):
         visible = 34. / self.camera_max
         offset = camera.x / float(self.camera_max + 42.0)
         with self.scrollbar as hud:
+            w = self.wind / self.windmax * 0.49
             hud.clear((1,0,1,0))
-            hud.rectangle(self.size.x * offset, 0, self.size.x * visible, hud.height, (0,1,1,1))
+            hud.rectangle(self.size.x * offset, 10, self.size.x * visible, 8, (0,1,1,1))
+            hud.rectangle(self.size.x * (0.5+w) - 4, 0, 8, hud.height, (1,0,0,0.8))
 
         with self.hud_ui as hud:
             hack = self.res_hack() * 20
@@ -402,7 +416,7 @@ class Game(object):
         self.hud_msgbox.draw()
 
         # scrollbar
-        mat = Matrix.translate(0, y-8-2)
+        mat = Matrix.translate(0, y-22)
         Shader.upload_model(mat)
         self.scrollbar.draw()
 
@@ -434,8 +448,8 @@ def run():
     # superglobals for quick access
     __builtins__['game'] = game
 
-    #game.init(Vector2i(800,600), fullscreen=False)
-    game.init(Vector2i(0,0), fullscreen=True)
+    game.init(Vector2i(800,600), fullscreen=False)
+    #game.init(Vector2i(0,0), fullscreen=True)
     #game.init(Vector2i(1280,800), fullscreen=True)
     game.run()
 
