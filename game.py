@@ -48,7 +48,7 @@ def event(type):
 class Game(object):
     player1_cam = Vector2f(0, -11)
     player2_cam = Vector2f(96, -11)
-    proj_spawn = [Vector2f(6, -10), Vector2f(123, -10)]
+    proj_spawn = [Vector2f(6, -10), Vector2f(125, -10)]
 
     def __init__(self):
         self._running = False
@@ -191,7 +191,7 @@ class Game(object):
 
             p = Game.proj_spawn[self.player]
             self.catapults[self.player].set_loaded(False)
-            self.projectile = item.create('projectile', name='projectile', x=p.x, y=p.y)
+            self.projectile = item.create('projectile', name='projectile', x=p.x, y=p.y, flip=self.player==0)
             self.projectile.impulse(force, 0.1)
 
     def projectile_miss(self, projectile):

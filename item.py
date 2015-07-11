@@ -8,6 +8,8 @@ from player import Player
 from utils.vector import Vector3f
 import types
 import re
+import numpy as np
+import pygame
 
 type_register = {}
 
@@ -150,7 +152,9 @@ class Projectile(PhysicsItem):
     weight = 6
     diffuse = 'texture/projectile.png'
 
-    def __init__(self, x, y, **kwargs):
+    def __init__(self, x, y, flip, **kwargs):
+        self.phase = pygame.time.get_ticks()
+        self.flip = flip
         PhysicsItem.__init__(self, x=x, y=y, **kwargs)
         self.pos = Vector2f(x,y)
         self.old = self.pos
@@ -158,7 +162,15 @@ class Projectile(PhysicsItem):
         self.mat = self.model_matrix() # hack (position set manually)
 
     def model_matrix(self):
-        return Matrix.transform(self.pos.x, self.pos.y, 0, 2.2, 2.2, 1)
+        phase = (pygame.time.get_ticks() - self.phase) / 1000.0
+        if self.flip: phase *= -1
+
+        offset = Matrix.translate(-0.5, -0.5)
+        translate = Matrix.translate(self.pos.x + 0.5, self.pos.y + 0.5)
+        scale = Matrix.scale(2.2, 2.2)
+        rotate = Matrix.rotatez(phase * 1.0)
+
+        return np.dot(offset, np.dot(rotate, np.dot(scale, translate)))
 
     def tilemap_collision(self):
         game.projectile_miss(self)
@@ -171,7 +183,7 @@ class Projectile(PhysicsItem):
 
             self.traveled += (self.old - self.pos).length()
 
-            if self.traveled > 400:
+            if self.traveled > 800:
                 for i in range(2):
                     d = (game.catapults[i].pos - self.pos).length()
                     if d < 2.5:

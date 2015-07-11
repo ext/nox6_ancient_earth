@@ -1,5 +1,6 @@
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import math
 
 class Matrix:
     @staticmethod
@@ -39,6 +40,15 @@ class Matrix:
         tr[0,0] = x
         tr[1,1] = y
         tr[2,2] = z
+        return tr
+
+    @staticmethod
+    def rotatez(angle):
+        tr = Matrix.identity()
+        tr[0,0] =  math.cos(angle)
+        tr[1,0] = -math.sin(angle)
+        tr[0,1] =  math.sin(angle)
+        tr[1,1] =  math.cos(angle)
         return tr
 
     @staticmethod
