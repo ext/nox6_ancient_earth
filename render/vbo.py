@@ -21,7 +21,12 @@ class VBO(object):
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
 
     def __del__(self):
-        glDeleteBuffers(2, self.buffer)
+        self.destroy()
+
+    def destroy(self):
+        if self.buffer is not None:
+            glDeleteBuffers(2, self.buffer)
+            self.buffer = None
 
     def draw(self):
         glBindBuffer(GL_ARRAY_BUFFER, self.buffer[0])

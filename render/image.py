@@ -57,6 +57,11 @@ def setup():
     i = np.array([0,1,2,3], np.uint32)
     sprite_quad = VBO(GL_QUADS, v, i)
 
+def cleanup():
+    global sprite_quad
+    sprite_quad.destroy()
+    del sprite_quad
+
 class Sprite(Image):
     def __init__(self, diffuse=None, normal=None):
         # other classes sometimes explicitly passes None as argument so cannot

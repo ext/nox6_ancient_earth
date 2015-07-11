@@ -314,5 +314,6 @@ def run():
     game.run()
 
     # force deallocation
+    image.cleanup()
     del __builtins__['game']
     del game
