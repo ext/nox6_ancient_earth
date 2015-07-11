@@ -65,7 +65,7 @@ class Item(object):
         self.shader.bind()
         self.sprite.draw()
 
-    def update(self, dt):
+    def update(self, map, dt):
         pass
 
     def kill(self):
@@ -81,11 +81,16 @@ class PhysicsItem(Item):
         self.weight = properties.get('weight', PhysicsItem.weight)
         self.impulses = []
 
-    def update(self, dt):
-        Item.update(self, dt)
+    def update(self, map, dt):
+        Item.update(self, map, dt)
 
+        # update position
         self.velocity += self.acceleration * dt
         self.pos += self.velocity * dt
+
+        # check for collisions
+        if map.tile_collision_at(self.pos):
+            self.tilemap_collision()
 
         # reset acceleration and impulses
         self.acceleration = sum([Vector2f(0, -9.82)] + [a for a,_ in self.impulses], Vector2f(0,0))
@@ -97,6 +102,10 @@ class PhysicsItem(Item):
     def impulse(self, force, t=0):
         """ Applies an impulse to the object, if t > 0 it is applied over time (constant force) """
         self.impulses.append((force / self.weight, t))
+
+    def tilemap_collision(self):
+        """ Called when this item collides with the tilemap """
+        pass
 
 @register_type('catapult')
 class Catapult(Item):
@@ -117,6 +126,9 @@ class Projectile(PhysicsItem):
 
     def model_matrix(self):
         return Matrix.transform(self.pos.x, self.pos.y, 0, 2.2, 2.2, 1)
+
+    def tilemap_collision(self):
+        game.projectile_miss(self)
 
 @register_type('light')
 class LightStub(Light):

@@ -14,16 +14,26 @@ from render.light import Light
 from utils.matrix import Matrix
 from utils.vector import Vector2i, Vector2f, Vector3f
 from map import Map
+from engine.camerasweep import CameraSweep
 import math
 import render.image as image
 import item
+import traceback
 
 class DummyProjectile(object):
+    def __init__(self, delay=None):
+        self.delay = delay
+
     def __nonzero__(self):
         return false
 
-    def update(self, dt):
-        pass
+    def update(self, map, dt):
+        # hack to force a small delay between missing target and next player get to fire
+        if self.delay is not None:
+            self.delay -= dt
+            if self.delay <= 0:
+                game.next_player()
+                self.delay = None
 
     def draw(self):
         pass
@@ -36,9 +46,14 @@ def event(type):
     return wrapper
 
 class Game(object):
+    player1_cam = Vector2f(0, -11)
+    player2_cam = Vector2f(164, -11)
+
     def __init__(self):
         self._running = False
         self.camera = Vector2f(0,-11)
+
+        self.camera_targets = [Game.player1_cam, Game.player2_cam]
 
     def init(self, size, fullscreen=False):
         flags = OPENGL|DOUBLEBUF
@@ -97,6 +112,7 @@ class Game(object):
         self.force = [50, 50]
         self.player = 0
         self.firing = False
+        self.sweep = None
 
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
@@ -124,6 +140,10 @@ class Game(object):
     def running(self):
         return self._running
 
+    def time(self):
+        """ Get current time as float """
+        return float(pygame.time.get_ticks()) / 1000.0
+
     @event(pygame.QUIT)
     def quit(self, event=None):
         self._running = False
@@ -135,7 +155,7 @@ class Game(object):
         if event.key == 27: # esc
             return self.quit()
         if event.key == 13: # enter
-            self.fire()
+            self.projectile_fire()
 
     @event(pygame.MOUSEBUTTONDOWN)
     def on_button(self, event):
@@ -143,11 +163,26 @@ class Game(object):
             if event.button == 4: self.camera.x += 5
             if event.button == 5: self.camera.x -= 5
 
-    def fire(self):
+    def next_player(self):
+        print 'Switching players'
+        self.player = 1 - self.player
+        self.sweep = CameraSweep(src=self.camera, dst=self.camera_targets[self.player])
+        self.firing = False
+
+    def projectile_fire(self):
         if not self.firing:
             self.firing = True
+
+            a = math.radians(self.angle[self.player])
+            f = self.force[self.player]
+            force = Vector2f(math.cos(a), math.sin(a)) * f
+
             self.projectile = item.create('projectile', name='projectile', x=6, y=-10)
-            self.projectile.impulse(Vector2f(500, 500), 0.1)
+            self.projectile.impulse(force, 0.1)
+
+    def projectile_miss(self, projectile):
+        self.message('Player %d missed the target' % (self.player+1,))
+        self.projectile = DummyProjectile(4)
 
     def poll(self):
         global event_table
@@ -160,7 +195,7 @@ class Game(object):
     def update(self):
         key = pygame.key.get_pressed()
 
-        if not self.firing:
+        if not self.firing and not self.sweep:
             if key[260]: self.camera.x -= 1
             if key[262]: self.camera.x += 1
 
@@ -175,7 +210,10 @@ class Game(object):
 
         dt = 1.0 / self.clock.tick(60)
         self.map.update()
-        self.projectile.update(dt)
+        self.projectile.update(self.map, dt)
+
+        if self.sweep:
+            self.camera, self.sweep = self.sweep.update(dt)
 
     def render_hud(self):
         with self.hud_msgbox as hud:
@@ -183,7 +221,7 @@ class Game(object):
             hud.cr.identity_matrix()
 
             t = pygame.time.get_ticks() / 1000.0
-            s = (t - self.texttime) / 4.0
+            s = (t - self.texttime) / 1.8
 
             if s > 1.0:
                 if len(self.textbuf) > 0:
@@ -191,8 +229,9 @@ class Game(object):
                     self.text = self.textbuf.pop(0)
             else:
                 a = min(1.0-s, 0.2) * 5
+                textcolor = (0,0,0,a)
                 hud.cr.translate(0,25)
-                hud.text(self.text, self.font, color=(1,0.8,0,a), width=hud.width, alignment=ALIGN_CENTER)
+                hud.text(self.text, self.font, color=textcolor, width=hud.width, alignment=ALIGN_CENTER)
 
         visible = 34. / self.camera_max
         offset = self.camera.x / float(self.camera_max + 42.0)
@@ -302,9 +341,12 @@ class Game(object):
     def run(self):
         self._running = True
         while self.running():
-            self.poll()
-            self.update()
-            self.render()
+            try:
+                self.poll()
+                self.update()
+                self.render()
+            except:
+                traceback.print_exc()
 
     def message(self, text):
         self.textbuf.append(text)

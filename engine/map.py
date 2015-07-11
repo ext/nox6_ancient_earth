@@ -94,5 +94,13 @@ class Map(object):
         except IndexError:
             return -1
 
+    def tile_collidable(self, i):
+        """ Tell if a tile index is collidable or just decorative """
+        return 0 < i < 96
+
+    def tile_collision_at(self, pos):
+        """ Similar to tile_at but only returns True if the tile it collides with is collidable """
+        return self.tile_collidable(self.tile_at(pos))
+
     def update(self):
         pass
