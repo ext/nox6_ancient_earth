@@ -445,8 +445,8 @@ def run():
     # superglobals for quick access
     __builtins__['game'] = game
 
-    game.init(Vector2i(800,600), fullscreen=False)
-    #game.init(Vector2i(0,0), fullscreen=True)
+    #game.init(Vector2i(800,600), fullscreen=False)
+    game.init(Vector2i(0,0), fullscreen=True)
     #game.init(Vector2i(1280,800), fullscreen=True)
     game.run()
 
