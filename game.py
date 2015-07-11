@@ -47,8 +47,8 @@ def event(type):
 
 class Game(object):
     player1_cam = Vector2f(0, -11)
-    player2_cam = Vector2f(164, -11)
-    proj_spawn = [Vector2f(6, -10), Vector2f(191, -10)]
+    player2_cam = Vector2f(96, -11)
+    proj_spawn = [Vector2f(6, -10), Vector2f(123, -10)]
 
     def __init__(self):
         self._running = False
@@ -100,7 +100,6 @@ class Game(object):
         self.repquad = VBO(GL_QUADS, v, i)
         self.parallax = Image('texture/sky.png', wrap=GL_REPEAT)
         self.hudbg = Image('texture/hud_bottom.png')
-        self.projectile = DummyProjectile()
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
@@ -109,14 +108,6 @@ class Game(object):
         self.post = Shader.load('post')
 
         self.ambient_light = (1.0, 1.0, 1.0)
-        self.angle = [90, 60]
-        self.force = [50, 50]
-        self.player = 0
-        self.firing = False
-        self.sweep = None
-        self.miss = False
-        self.follow_cam = None
-        self.is_over = False
 
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
@@ -124,20 +115,11 @@ class Game(object):
         self.hud_ui = HUD(Vector2i(self.size.x, self.size.x * (160./800)), 'ui')
         self.scrollbar = HUD(Vector2i(self.size.x,8), 'scrollbar')
         self.font = self.hud_msgbox.create_font(size=16)
-        self.font_ui = self.hud_ui.create_font(size=16)
+        self.font_ui = self.hud_ui.create_font(size=18, font='Comic Sans MS')
         self.camera_max = self.map.width - 36
         self.catapults = [self.map.get_named_item('Catapult 1'), self.map.get_named_item('Catapult 2')]
 
-        #self.land = pygame.mixer.Sound('data/sound/land.wav')
-        #self.ding = pygame.mixer.Sound('data/sound/ding.wav')
-        #self.eat = pygame.mixer.Sound('data/sound/eat.wav')
-        #self.wind = pygame.mixer.Sound('data/sound/wind.wav')
-
-        #self.wind.play(loops=-1)
-
-        self.textbuf = []
-        self.texttime = -10.0
-        self.message('<b>derp</b>\na herp.')
+        self.reset()
 
         with self.hud_msgbox:
             self.hud_msgbox.clear((0,1,1,1))
@@ -148,6 +130,20 @@ class Game(object):
     def time(self):
         """ Get current time as float """
         return float(pygame.time.get_ticks()) / 1000.0
+
+    def reset(self):
+        self.projectile = DummyProjectile()
+        self.angle = [60, 60]
+        self.force = [50, 50]
+        self.player = 0
+        self.firing = False
+        self.sweep = None
+        self.miss = False
+        self.follow_cam = None
+        self.is_over = False
+        self.textbuf = []
+        self.texttime = -10.0
+        self.catapults[0].set_loaded(True)
 
     @event(pygame.QUIT)
     def quit(self, event=None):
@@ -161,7 +157,11 @@ class Game(object):
         if event.key == 113 and event.mod & KMOD_CTRL: # ctrl+q
             return self.quit()
         if event.key == 27: # esc
-            return self.quit()
+            if not self.is_over:
+                return self.quit()
+            else:
+                self.reset()
+                return True
         if event.key == 13: # enter
             self.projectile_fire()
 
@@ -183,7 +183,7 @@ class Game(object):
             self.firing = True
 
             a = math.radians(self.angle[self.player])
-            f = self.force[self.player] * 15
+            f = self.force[self.player] * 5
             force = Vector2f(math.cos(a), math.sin(a)) * f
 
             if self.player == 1:
@@ -201,10 +201,13 @@ class Game(object):
         # hack: remove all other message
         self.textbuf = []
 
+        # hack: directly inject message
         if self.player != hit:
             self.text = 'Player %d hit the other player and won!' % (self.player+1)
         else:
             self.text = 'Player %d hit himself and lost...' % (self.player+1)
+        self.text += '\n\nPress ESC to restart.'
+
         game.over()
 
     def poll(self):
@@ -234,16 +237,19 @@ class Game(object):
 
             if key[273]: self.angle[self.player] += 0.3
             if key[274]: self.angle[self.player] -= 0.3
-            if key[275]: self.force[self.player] += 0.5
-            if key[276]: self.force[self.player] -= 0.5
+            if key[275]: self.force[self.player] += 1
+            if key[276]: self.force[self.player] -= 1
 
             self.camera.x = min(max(self.camera.x, 0), self.camera_max)
             self.angle[self.player] = min(max(self.angle[self.player], 0), 90)
-            self.force[self.player] = min(max(self.force[self.player], 0), 200)
+            self.force[self.player] = min(max(self.force[self.player], 0), 3000)
 
         dt = 1.0 / self.clock.tick(60)
+        #print dt, self.clock.get_fps()
         self.map.update()
-        self.projectile.update(self.map, dt)
+
+        # fixed step for better physics "simulation"
+        self.projectile.update(self.map, 0.05)
 
         if self.sweep:
             self.camera, self.sweep = self.sweep.update(dt)
@@ -280,15 +286,15 @@ class Game(object):
         with self.hud_ui as hud:
             hud.clear((1,1,1,0))
             hud.cr.identity_matrix()
-            hud.cr.translate(20, 25)
+            hud.cr.translate(30, 30)
             hud.text('Player %d' % (self.player+1,), self.font_ui)
 
             hud.cr.identity_matrix()
-            hud.cr.translate(20, 70)
+            hud.cr.translate(30, 70)
             hud.text('Angle: %3.0f' % self.angle[self.player], self.font_ui)
 
             hud.cr.identity_matrix()
-            hud.cr.translate(20, 100)
+            hud.cr.translate(30, 100)
             hud.text('Force: %3.0f' % self.force[self.player], self.font_ui)
 
     def render_world(self, camera):

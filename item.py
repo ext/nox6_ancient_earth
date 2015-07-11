@@ -92,13 +92,20 @@ class PhysicsItem(Item):
         tile = map.tile_at(self.pos)
         if map.tile_collidable(tile) or self.pos.y < -25:
             self.tilemap_collision()
+            return False
+
+        if self.pos.x - 30 > game.camera_max or self.pos.x < -10:
+            self.tilemap_collision()
+            return False
 
         # reset acceleration and impulses
-        self.acceleration = sum([Vector2f(0, -9.82)] + [a for a,_ in self.impulses], Vector2f(0,0))
+        gravity = -5.0
+        self.acceleration = sum([Vector2f(0, gravity)] + [a for a,_ in self.impulses], Vector2f(0,0))
         self.impulses = [(a, t-dt) for a,t in self.impulses if t-dt > 0]
 
         # update model matrix
         self.mat = self.model_matrix()
+        return True
 
     def impulse(self, force, t=0):
         """ Applies an impulse to the object, if t > 0 it is applied over time (constant force) """
@@ -152,14 +159,19 @@ class Projectile(PhysicsItem):
         game.projectile_miss(self)
 
     def update(self, map, dt):
-        PhysicsItem.update(self, map, dt)
-        self.traveled += (self.old - self.pos).length()
+        # smaller timesteps
+        for q in range(10):
+            if not PhysicsItem.update(self, map, dt * 0.1):
+                break # tilemap hit detected
 
-        if self.traveled > 100:
-            for i in range(2):
-                d = (game.catapults[i].pos - self.pos).length()
-                if d < 2.5:
-                    game.projectile_hit(i)
+            self.traveled += (self.old - self.pos).length()
+
+            if self.traveled > 400:
+                for i in range(2):
+                    d = (game.catapults[i].pos - self.pos).length()
+                    if d < 2.5:
+                        game.projectile_hit(i)
+                        break
 
 @register_type('light')
 class LightStub(Light):

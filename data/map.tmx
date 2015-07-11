@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="200" height="20" tilewidth="8" tileheight="8" nextobjectid="39">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="132" height="20" tilewidth="8" tileheight="8" nextobjectid="39">
  <tileset firstgid="1" name="tiles" tilewidth="8" tileheight="8">
   <properties>
    <property name="normalmap" value="texture/tiles_normal.png"/>
   </properties>
   <image source="texture/tiles.png" width="128" height="128"/>
  </tileset>
- <layer name="Tile Layer 1" width="200" height="20">
+ <layer name="Tile Layer 1" width="132" height="20">
   <data encoding="base64" compression="zlib">
-   eJztmDlPxDAQhcNKQEVBoOCqkLjpaLgajoKr4ecBf5RbPEtrybLGG9sZJ2T3fdKnlSZSxpHnbbxbVYQQQgghhBBCCCGEEEIIIYQQQgghhBBChsAKXIWjvhfyT5hT8h1+wE/4Bb8V7z0L9ombidqR6O3vIpz3XFK8/7TbBzYXdUDLsvcZoun6ENHKxSU8hWfwHF6Ma9OYFfPMC572+V7gK3xT6jUqaCgX1pK9c+0ajWw8wid4B+/hg1ArlRHpvVUyjzYba3AdbsBNuFWFM9Nm5ptmeNbsmrZz6c6HNDNure3shrIQ6lcqG8dwHx7AQ3g0oSblpO8ZG7JdkzujZq0x8yHVUnNie6b203yHmDW450bpLDmp5q4lZR5S+0g1kk/Od3fOHkk1s/838BY+e/2u4PX4eu6cxJ53Yt4ZRuncGFurnXumPEtqH6lG8omdkbZ7JNV24C7cg9tezxPvukY/Pyvuf9E/8LeSf3s3nRtja7Zvyrr/AC2SVo4=
+   eJzt1skKglAUxvESolWLrEXTKmjuAZp2tWja9P4v0rToExRErtPxek38fvAnOIVaHrBajYiIiIiIiIiIiIiIqNo6qIusoi/kT9Q19UQv9EYf9BUexwT/Dti+SN8+NFEjUEtwnDx5e2CH5GkHXsPEvV9GuvbggDZoi3Zo787S7oaVY2F74JXnuaWZpmMXbuiOzuiCroqZ8zkd96xqmZZ1FwZoiEaoh/oRs6J/2zJmmnQPnGtdoCVaoTWax8ySfH/VMyftjOQk/xcl90g1c+7/EZ3Qwz1P1DMn6Yzkku5C1nukmk3QFM3Q2D3XD7wGLr4=
   </data>
  </layer>
- <objectgroup color="#ffff00" name="Player 1">
+ <objectgroup color="#ffff00" name="Objects">
   <object id="36" name="Catapult 1" type="Catapult" x="36.5417" y="93.125" width="45.0833" height="26.875"/>
-  <object id="38" name="Catapult 2" type="Catapult" x="1524.13" y="92.2292" width="45.0833" height="26.875">
+  <object id="38" name="Catapult 2" type="Catapult" x="988.792" y="92.2292" width="45.0833" height="26.875">
    <properties>
     <property name="Flip" value="1"/>
    </properties>

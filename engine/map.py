@@ -88,7 +88,6 @@ class Map(object):
         self.vbo.draw(*args, **kwargs)
 
     def get_named_item(self, name):
-        print self.named_objects
         return self.named_objects.get(name, None)
 
     def tile_at(self, pos):
