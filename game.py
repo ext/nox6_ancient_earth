@@ -174,7 +174,6 @@ class Game(object):
         r = float(random.randint(0, 10000)) / 10000 # [0..1]
         r = r * 2.0 - 1.0 # [-1..1]
         self.wind = r * self.windmax
-        print self.wind
 
     @event(pygame.KEYDOWN)
     def on_keypress(self, event):
@@ -197,7 +196,6 @@ class Game(object):
             if event.button == 5: self.camera.x -= 5
 
     def next_player(self):
-        print 'Switching players'
         self.player = 1 - self.player
         self.sweep = CameraSweep(src=self.follow_cam, dst=self.camera_targets[self.player])
         self.follow_cam = None
@@ -276,7 +274,6 @@ class Game(object):
             self.force[self.player] = min(max(self.force[self.player], 0), 3000)
 
         dt = 1.0 / self.clock.tick(60)
-        #print dt, self.clock.get_fps()
         self.map.update()
 
         # fixed step for better physics "simulation"

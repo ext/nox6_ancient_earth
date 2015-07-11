@@ -32,7 +32,6 @@ class CameraSweep(object):
         self.d = duration
         self.t = game.time()
         self.transition = table[transition]
-        print 'Creating camera sweep to', dst, 'over', duration, 'seconds'
 
     def update(self, dt):
         t = game.time() - self.t
