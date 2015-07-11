@@ -208,6 +208,11 @@ class Game(object):
             self.text = 'Player %d hit himself and lost...' % (self.player+1)
         self.text += '\n\nPress ESC to restart.'
 
+        if hit == self.player:
+            self.catapults[self.player].set_broken()
+        else:
+            self.catapults[1-self.player].set_broken()
+
         game.over()
 
     def poll(self):
@@ -328,7 +333,8 @@ class Game(object):
             # entities
             for obj in self.map.obj:
                 obj.draw()
-            self.projectile.draw()
+            if not self.is_over:
+                self.projectile.draw()
 
     def render(self):
         glClearColor(1,0,1,1)

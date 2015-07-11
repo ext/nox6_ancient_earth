@@ -119,6 +119,7 @@ class PhysicsItem(Item):
 class Catapult(Item):
     diffuse = 'texture/catapult_loaded.png'
     other = 'texture/catapult_unloaded.png'
+    broken = 'texture/catapult_broken.png'
 
     def __init__(self, height, properties, **kwargs):
         Item.__init__(self, height=height, properties=properties, **kwargs)
@@ -133,12 +134,16 @@ class Catapult(Item):
 
         self.loaded = self.sprite
         self.unloaded = image.Sprite(diffuse=Catapult.other)
+        self.broken = image.Sprite(diffuse=Catapult.broken)
 
     def set_loaded(self, state):
         if state:
             self.sprite = self.loaded
         else:
             self.sprite = self.unloaded
+
+    def set_broken(self):
+        self.sprite = self.broken
 
 @register_type('projectile')
 class Projectile(PhysicsItem):
