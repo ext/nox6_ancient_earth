@@ -69,7 +69,7 @@ class Game(object):
             flags |= FULLSCREEN
 
         pygame.display.set_mode(size.xy, flags)
-        pygame.display.set_caption('Super Ancient Precision Adventure^WGame')
+        pygame.display.set_caption('Ancient Earth')
 
         i = pygame.display.Info()
         self.size = Vector2i(i.current_w, i.current_h)
