@@ -39,7 +39,7 @@ class Item(object):
     def __init__(self, name, x, y, properties={}, **kwargs):
         self.name = name
         self.pos = Vector2f(x,-y) * (1.0 / 8)
-        self.mat = Matrix.translate(self.pos.x, self.pos.y)
+        self.mat = self.model_matrix()
         self.killed = False
 
         if 'texture' in properties:
@@ -54,6 +54,9 @@ class Item(object):
         if self.shader is None:
             raise AttributeError, 'Failed to load shader %s' % self.shader_name
 
+    def model_matrix(self):
+        return Matrix.translate(self.pos.x, self.pos.y)
+
     def load_sprite(self, *args, **kwargs):
         self.sprite = image.Sprite(*args, **kwargs)
 
@@ -62,8 +65,38 @@ class Item(object):
         self.shader.bind()
         self.sprite.draw()
 
+    def update(self, dt):
+        pass
+
     def kill(self):
         self.killed = True
+
+class PhysicsItem(Item):
+    weight = 10
+
+    def __init__(self, properties={}, *args, **kwargs):
+        Item.__init__(self, *args, **kwargs)
+        self.velocity = Vector2f(0,0)
+        self.acceleration = Vector2f(0,0)
+        self.weight = properties.get('weight', PhysicsItem.weight)
+        self.impulses = []
+
+    def update(self, dt):
+        Item.update(self, dt)
+
+        self.velocity += self.acceleration * dt
+        self.pos += self.velocity * dt
+
+        # reset acceleration and impulses
+        self.acceleration = sum([Vector2f(0, -9.82)] + [a for a,_ in self.impulses], Vector2f(0,0))
+        self.impulses = [(a, t-dt) for a,t in self.impulses if t-dt > 0]
+
+        # update model matrix
+        self.mat = self.model_matrix()
+
+    def impulse(self, force, t=0):
+        """ Applies an impulse to the object, if t > 0 it is applied over time (constant force) """
+        self.impulses.append((force / self.weight, t))
 
 @register_type('catapult')
 class Catapult(Item):
@@ -74,13 +107,16 @@ class Catapult(Item):
         self.mat = Matrix.transform(self.pos.x, self.pos.y - height * (1.0/8) + 1, 0, 5, 5, 1)
 
 @register_type('projectile')
-class Projectile(Item):
+class Projectile(PhysicsItem):
     diffuse = 'texture/projectile.png'
 
     def __init__(self, x, y, **kwargs):
-        Item.__init__(self, x=x, y=y, **kwargs)
+        PhysicsItem.__init__(self, x=x, y=y, **kwargs)
         self.pos = Vector2f(x,y)
-        self.mat = Matrix.transform(self.pos.x, self.pos.y, 0, 2.2, 2.2, 1)
+        self.mat = self.model_matrix() # hack (position set manually)
+
+    def model_matrix(self):
+        return Matrix.transform(self.pos.x, self.pos.y, 0, 2.2, 2.2, 1)
 
 @register_type('light')
 class LightStub(Light):

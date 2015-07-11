@@ -18,6 +18,16 @@ import math
 import render.image as image
 import item
 
+class DummyProjectile(object):
+    def __nonzero__(self):
+        return false
+
+    def update(self, dt):
+        pass
+
+    def draw(self):
+        pass
+
 event_table = {}
 def event(type):
     def wrapper(func):
@@ -74,7 +84,7 @@ class Game(object):
         self.repquad = VBO(GL_QUADS, v, i)
         self.parallax = Image('texture/sky.png', wrap=GL_REPEAT)
         self.hudbg = Image('texture/hud_bottom.png')
-        self.projectile = None
+        self.projectile = DummyProjectile()
 
         self.fbo = FBO(self.size, format=GL_RGB8, depth=True)
 
@@ -137,6 +147,7 @@ class Game(object):
         if not self.firing:
             self.firing = True
             self.projectile = item.create('projectile', name='projectile', x=6, y=-10)
+            self.projectile.impulse(Vector2f(500, 500), 0.1)
 
     def poll(self):
         global event_table
@@ -164,6 +175,7 @@ class Game(object):
 
         dt = 1.0 / self.clock.tick(60)
         self.map.update()
+        self.projectile.update(dt)
 
     def render_hud(self):
         with self.hud_msgbox as hud:
@@ -233,9 +245,7 @@ class Game(object):
             # entities
             for obj in self.map.obj:
                 obj.draw()
-
-            if self.firing:
-                self.projectile.draw()
+            self.projectile.draw()
 
     def render(self):
         glClearColor(1,0,1,1)
