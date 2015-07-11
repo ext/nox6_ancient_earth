@@ -20,6 +20,12 @@ import render.image as image
 import item
 import traceback
 
+def lerp(a, b, s):
+    return a + (b - a) * s
+
+def clamp(a, b, c):
+    return min(max(a, b), c)
+
 class DummyProjectile(object):
     def __init__(self, delay=None):
         self.delay = delay
@@ -109,20 +115,28 @@ class Game(object):
 
         self.ambient_light = (1.0, 1.0, 1.0)
 
+        fontsize = 16 + int(self.res_hack() * 14)
+
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
         self.hud_msgbox = HUD(Vector2i(500,100), 'msgbox')
         self.hud_ui = HUD(Vector2i(self.size.x, self.size.x * (160./800)), 'ui')
         self.scrollbar = HUD(Vector2i(self.size.x,8), 'scrollbar')
-        self.font = self.hud_msgbox.create_font(size=16)
-        self.font_ui = self.hud_ui.create_font(size=18, font='Comic Sans MS')
-        self.camera_max = self.map.width - 36
+        self.font = self.hud_msgbox.create_font(size=fontsize)
+        self.font_ui = self.hud_ui.create_font(size=fontsize, font='Comic Sans MS')
+        self.camera_max = self.map.width - 38
         self.catapults = [self.map.get_named_item('Catapult 1'), self.map.get_named_item('Catapult 2')]
 
         self.reset()
 
         with self.hud_msgbox:
             self.hud_msgbox.clear((0,1,1,1))
+
+    def res_hack(self):
+        """ return [0..1] based on resolution where 800 gives 0 and 1920 gives 1 """
+        a = float(self.size.x) - 800.
+        b = 1920. - 800.
+        return clamp(a/b, 0.0, 1.0)
 
     def running(self):
         return self._running
@@ -289,17 +303,19 @@ class Game(object):
             hud.rectangle(self.size.x * offset, 0, self.size.x * visible, hud.height, (0,1,1,1))
 
         with self.hud_ui as hud:
+            hack = self.res_hack() * 20
+
             hud.clear((1,1,1,0))
             hud.cr.identity_matrix()
-            hud.cr.translate(30, 30)
+            hud.cr.translate(30 + hack, 30 + hack)
             hud.text('Player %d' % (self.player+1,), self.font_ui)
 
             hud.cr.identity_matrix()
-            hud.cr.translate(30, 70)
+            hud.cr.translate(30 + hack, 70 + hack)
             hud.text('Angle: %3.0f' % self.angle[self.player], self.font_ui)
 
             hud.cr.identity_matrix()
-            hud.cr.translate(30, 100)
+            hud.cr.translate(30 + hack, 100 + hack)
             hud.text('Force: %3.0f' % self.force[self.player], self.font_ui)
 
     def render_world(self, camera):
@@ -418,8 +434,9 @@ def run():
     # superglobals for quick access
     __builtins__['game'] = game
 
-    game.init(Vector2i(800,600), fullscreen=False)
-    #game.init(Vector2i(0,0), fullscreen=True)
+    #game.init(Vector2i(800,600), fullscreen=False)
+    game.init(Vector2i(0,0), fullscreen=True)
+    #game.init(Vector2i(1280,800), fullscreen=True)
     game.run()
 
     # force deallocation
