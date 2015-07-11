@@ -38,6 +38,14 @@ class Vector2:
             # scalar multiplication
             return self.__class__(self.x * rhs, self.y * rhs)
 
+    def __div__(self, rhs):
+        try:
+            # componentwise division
+            return self.__class__(self.x / rhs[0], self.y / rhs[1])
+        except TypeError:
+            # scalar division
+            return self.__class__(self.x / rhs, self.y / rhs)
+
     def __repr__(self):
         return '<vector (%.3f, %.3f)>' % (self.x, self.y)
 
@@ -114,6 +122,10 @@ class Vector3:
     # scalar multiplication
     def __mul__(self, scalar):
         return self.__class__(self.x * scalar, self.y * scalar, self.z * scalar)
+
+    # scalar division
+    def __div__(self, scalar):
+        return self.__class__(self.x / scalar, self.y / scalar, self.z / scalar)
 
     def __repr__(self):
         return '<vector (%.3f, %.3f, %.3f)>' % (self.x, self.y, self.z)
@@ -228,6 +240,12 @@ if __name__ == '__main__':
             v2 = v1 * 2
             self.assertEqual(v2.x, 2.0)
             self.assertEqual(v2.y, 4.0)
+
+        def test_div_scalar(self):
+            v1 = Vector2(2.0, 4.0)
+            v2 = v1 / 2
+            self.assertEqual(v2.x, 1.0)
+            self.assertEqual(v2.y, 2.0)
 
         def test_lenght(self):
             v = Vector2(5.0, 5.0)
@@ -346,6 +364,13 @@ if __name__ == '__main__':
             self.assertEqual(v2.x, 2.0)
             self.assertEqual(v2.y, 4.0)
             self.assertEqual(v2.z, 6.0)
+
+        def test_div_scalar(self):
+            v1 = Vector3(2.0, 4.0, 6.0)
+            v2 = v1 / 2
+            self.assertEqual(v2.x, 1.0)
+            self.assertEqual(v2.y, 2.0)
+            self.assertEqual(v2.z, 3.0)
 
         def test_lenght(self):
             v = Vector3(5.0, 5.0, 5.0)
