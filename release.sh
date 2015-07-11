@@ -20,3 +20,6 @@ cd \$(dirname \$0)/datta
 python main.py
 EOF
 chmod +x run.sh
+
+cd ..
+tar cvzf ${destdir}-ext.tar.gz ${destdir}
