@@ -72,13 +72,13 @@ class Item(object):
         self.killed = True
 
 class PhysicsItem(Item):
-    weight = 10
+    weight = 1
 
     def __init__(self, properties={}, *args, **kwargs):
         Item.__init__(self, *args, **kwargs)
         self.velocity = Vector2f(0,0)
         self.acceleration = Vector2f(0,0)
-        self.weight = properties.get('weight', PhysicsItem.weight)
+        self.weight = properties.get('weight', self.__class__.weight)
         self.impulses = []
 
     def update(self, map, dt):
@@ -88,8 +88,9 @@ class PhysicsItem(Item):
         self.velocity += self.acceleration * dt
         self.pos += self.velocity * dt
 
-        # check for collisions
-        if map.tile_collision_at(self.pos):
+        # check for collisions (hack: or if it fell below map)
+        tile = map.tile_at(self.pos)
+        if map.tile_collidable(tile) or self.pos.y < -25:
             self.tilemap_collision()
 
         # reset acceleration and impulses
@@ -117,6 +118,7 @@ class Catapult(Item):
 
 @register_type('projectile')
 class Projectile(PhysicsItem):
+    weight = 6
     diffuse = 'texture/projectile.png'
 
     def __init__(self, x, y, **kwargs):

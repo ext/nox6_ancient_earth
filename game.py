@@ -25,7 +25,7 @@ class DummyProjectile(object):
         self.delay = delay
 
     def __nonzero__(self):
-        return false
+        return False
 
     def update(self, map, dt):
         # hack to force a small delay between missing target and next player get to fire
@@ -113,6 +113,8 @@ class Game(object):
         self.player = 0
         self.firing = False
         self.sweep = None
+        self.miss = False
+        self.follow_cam = None
 
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
@@ -166,7 +168,8 @@ class Game(object):
     def next_player(self):
         print 'Switching players'
         self.player = 1 - self.player
-        self.sweep = CameraSweep(src=self.camera, dst=self.camera_targets[self.player])
+        self.sweep = CameraSweep(src=self.follow_cam, dst=self.camera_targets[self.player])
+        self.follow_cam = None
         self.firing = False
 
     def projectile_fire(self):
@@ -174,15 +177,14 @@ class Game(object):
             self.firing = True
 
             a = math.radians(self.angle[self.player])
-            f = self.force[self.player]
+            f = self.force[self.player] * 10
             force = Vector2f(math.cos(a), math.sin(a)) * f
 
             self.projectile = item.create('projectile', name='projectile', x=6, y=-10)
             self.projectile.impulse(force, 0.1)
 
     def projectile_miss(self, projectile):
-        self.message('Player %d missed the target' % (self.player+1,))
-        self.projectile = DummyProjectile(4)
+        self.miss = True # defer so the projectile is rendered one more frame
 
     def poll(self):
         global event_table
@@ -194,6 +196,12 @@ class Game(object):
 
     def update(self):
         key = pygame.key.get_pressed()
+
+        if self.miss:
+            self.message('Player %d missed the target' % (self.player+1,))
+            self.old_projectile = self.projectile
+            self.projectile = DummyProjectile(4)
+            self.miss = False
 
         if not self.firing and not self.sweep:
             if key[260]: self.camera.x -= 1
@@ -215,7 +223,7 @@ class Game(object):
         if self.sweep:
             self.camera, self.sweep = self.sweep.update(dt)
 
-    def render_hud(self):
+    def render_hud(self, camera):
         with self.hud_msgbox as hud:
             hud.clear((0,0,0,0))
             hud.cr.identity_matrix()
@@ -234,7 +242,7 @@ class Game(object):
                 hud.text(self.text, self.font, color=textcolor, width=hud.width, alignment=ALIGN_CENTER)
 
         visible = 34. / self.camera_max
-        offset = self.camera.x / float(self.camera_max + 42.0)
+        offset = camera.x / float(self.camera_max + 42.0)
         with self.scrollbar as hud:
             hud.clear((1,0,1,0))
             hud.rectangle(self.size.x * offset, 0, self.size.x * visible, hud.height, (0,1,1,1))
@@ -253,10 +261,10 @@ class Game(object):
             hud.cr.translate(20, 100)
             hud.text('Force: %3.0f' % self.force[self.player], self.font_ui)
 
-    def render_world(self):
+    def render_world(self, camera):
         view = Matrix.lookat(
-            self.camera.x + 19, self.camera.y, 15,
-            self.camera.x + 19, self.camera.y, 0,
+            camera.x + 19, camera.y, 15,
+            camera.x + 19, camera.y, 0,
             0,1,0)
 
         with self.fbo as frame:
@@ -290,8 +298,15 @@ class Game(object):
         glClearColor(1,0,1,1)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
 
-        self.render_hud()
-        self.render_world()
+        camera = self.camera.copy()
+        if self.projectile:
+            camera.x = max(self.projectile.pos.x - 19, 0)
+            self.follow_cam = camera
+        elif self.follow_cam:
+            camera = self.follow_cam
+
+        self.render_hud(camera)
+        self.render_world(camera)
 
         mat = Matrix.scale(self.size.x, self.size.y)
         Shader.upload_projection_view(self.ortho, Matrix.identity())
