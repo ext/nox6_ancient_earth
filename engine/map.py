@@ -22,6 +22,7 @@ class Map(object):
         self.height = data['height']
         self.tile_width  = data['tilewidth']
         self.tile_height = data['tileheight']
+        self.named_objects = {}
 
         # load tilemap
         self.load_tileset(data['tilesets'])
@@ -71,10 +72,12 @@ class Map(object):
         self.vbo = VBO(GL_QUADS, ver, ind)
         self.grid = np.array(layer['data'], np.uint32)
 
-    @staticmethod
-    def load_objects(src):
+    def load_objects(self, src):
         for obj in src:
-            yield item.create(obj['type'], **obj)
+            x = item.create(obj['type'], **obj)
+            if x.name != '':
+                self.named_objects[x.name] = x
+            yield x
 
     def draw(self, *args, **kwargs):
         Shader.upload_model(Matrix.identity())
@@ -83,6 +86,10 @@ class Map(object):
         glActiveTexture(GL_TEXTURE0)
         self.texture[0].texture_bind()
         self.vbo.draw(*args, **kwargs)
+
+    def get_named_item(self, name):
+        print self.named_objects
+        return self.named_objects.get(name, None)
 
     def tile_at(self, pos):
         x = int(pos.x)

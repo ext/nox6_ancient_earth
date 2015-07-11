@@ -48,6 +48,7 @@ def event(type):
 class Game(object):
     player1_cam = Vector2f(0, -11)
     player2_cam = Vector2f(164, -11)
+    proj_spawn = [Vector2f(6, -10), Vector2f(191, -10)]
 
     def __init__(self):
         self._running = False
@@ -124,6 +125,7 @@ class Game(object):
         self.font = self.hud_msgbox.create_font(size=16)
         self.font_ui = self.hud_ui.create_font(size=16)
         self.camera_max = self.map.width - 36
+        self.catapults = [self.map.get_named_item('Catapult 1'), self.map.get_named_item('Catapult 2')]
 
         self.land = pygame.mixer.Sound('data/sound/land.wav')
         self.ding = pygame.mixer.Sound('data/sound/ding.wav')
@@ -177,10 +179,15 @@ class Game(object):
             self.firing = True
 
             a = math.radians(self.angle[self.player])
-            f = self.force[self.player] * 10
+            f = self.force[self.player] * 15
             force = Vector2f(math.cos(a), math.sin(a)) * f
 
-            self.projectile = item.create('projectile', name='projectile', x=6, y=-10)
+            if self.player == 1:
+                force.x *= -1
+
+            p = Game.proj_spawn[self.player]
+            self.catapults[self.player].set_loaded(False)
+            self.projectile = item.create('projectile', name='projectile', x=p.x, y=p.y)
             self.projectile.impulse(force, 0.1)
 
     def projectile_miss(self, projectile):
@@ -222,6 +229,8 @@ class Game(object):
 
         if self.sweep:
             self.camera, self.sweep = self.sweep.update(dt)
+            if not self.sweep:
+                self.catapults[self.player].set_loaded(True)
 
     def render_hud(self, camera):
         with self.hud_msgbox as hud:
@@ -276,7 +285,7 @@ class Game(object):
 
             # parallax background
             pm = Matrix.transform(
-                0.75 * self.camera.x, self.camera.y * 0.5 - 12, 0,
+                0.75 * camera.x, camera.y * 0.5 - 12, 0,
                 (19*4) * self.parallax_rep, 19, 0
             )
             self.shader_hud.bind()
@@ -300,7 +309,7 @@ class Game(object):
 
         camera = self.camera.copy()
         if self.projectile:
-            camera.x = max(self.projectile.pos.x - 19, 0)
+            camera.x = min(max(self.projectile.pos.x - 19, 0), self.camera_max)
             self.follow_cam = camera
         elif self.follow_cam:
             camera = self.follow_cam

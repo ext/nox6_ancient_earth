@@ -31,6 +31,21 @@
                  "width":45.0833333333333,
                  "x":36.5416666666667,
                  "y":93.125
+                }, 
+                {
+                 "height":26.875,
+                 "id":38,
+                 "name":"Catapult 2",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"Catapult",
+                 "visible":true,
+                 "width":45.0833,
+                 "x":1524.12501666667,
+                 "y":92.2291666666667
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -109,7 +124,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":38,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "properties":
     {

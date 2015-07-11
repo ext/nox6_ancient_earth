@@ -111,10 +111,20 @@ class PhysicsItem(Item):
 @register_type('catapult')
 class Catapult(Item):
     diffuse = 'texture/catapult_loaded.png'
+    other = 'texture/catapult_unloaded.png'
 
     def __init__(self, height, **kwargs):
         Item.__init__(self, height=height, **kwargs)
         self.mat = Matrix.transform(self.pos.x, self.pos.y - height * (1.0/8) + 1, 0, 5, 5, 1)
+
+        self.loaded = self.sprite
+        self.unloaded = image.Sprite(diffuse=Catapult.other)
+
+    def set_loaded(self, state):
+        if state:
+            self.sprite = self.loaded
+        else:
+            self.sprite = self.unloaded
 
 @register_type('projectile')
 class Projectile(PhysicsItem):
