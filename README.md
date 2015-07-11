@@ -1,5 +1,6 @@
-Unnamed game
-=============================
+Ancient Earth
+=============
+
 NördtroXy VI 24h gamedev entry.
 
 Author: ext
