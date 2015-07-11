@@ -96,7 +96,7 @@ class PhysicsItem(Item):
             self.tilemap_collision()
             return False
 
-        if self.pos.x - 30 > game.camera_max or self.pos.x < -10:
+        if self.pos.x - 32 > game.camera_max or self.pos.x < -10:
             self.tilemap_collision()
             return False
 

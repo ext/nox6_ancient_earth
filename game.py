@@ -53,7 +53,7 @@ def event(type):
 
 class Game(object):
     player1_cam = Vector2f(0, -11)
-    player2_cam = Vector2f(96, -11)
+    player2_cam = Vector2f(94, -11)
     proj_spawn = [Vector2f(6, -10), Vector2f(125, -10)]
 
     def __init__(self):
