@@ -91,6 +91,9 @@ class Vector2i (Vector2):
     def __repr__(self):
         return '<vector (%d, %d)>' % self.xy
 
+def lerp2(a, b, s):
+    return a + (b - a) * s
+
 class Vector3:
     def __init__(self, x=0.0, y=0.0, z=0.0):
         if isinstance(x, tuple):
@@ -267,6 +270,22 @@ if __name__ == '__main__':
             v = Vector2(tuple(expected))
             for g,e in zip(v, expected):
                 self.assertAlmostEqual(g,e)
+
+        def test_lerp(self):
+            a = Vector2f(3,5)
+            b = Vector2f(6,10)
+
+            q = lerp2(a,b,0.0)
+            self.assertAlmostEqual(q.x, 3.0)
+            self.assertAlmostEqual(q.y, 5.0)
+
+            r = lerp2(a,b,0.5)
+            self.assertAlmostEqual(r.x, 4.5)
+            self.assertAlmostEqual(r.y, 7.5)
+
+            s = lerp2(a,b,1.0)
+            self.assertAlmostEqual(s.x, 6.0)
+            self.assertAlmostEqual(s.y, 10.0)
 
     class test_vector3(unittest.TestCase):
         def test_constructor_empty(self):
