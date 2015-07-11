@@ -113,9 +113,16 @@ class Catapult(Item):
     diffuse = 'texture/catapult_loaded.png'
     other = 'texture/catapult_unloaded.png'
 
-    def __init__(self, height, **kwargs):
-        Item.__init__(self, height=height, **kwargs)
-        self.mat = Matrix.transform(self.pos.x, self.pos.y - height * (1.0/8) + 1, 0, 5, 5, 1)
+    def __init__(self, height, properties, **kwargs):
+        Item.__init__(self, height=height, properties=properties, **kwargs)
+
+        flip = 1
+        offset = 0
+        if 'Flip' in properties:
+            flip = -1
+            offset = 5
+
+        self.mat = Matrix.transform(self.pos.x + offset, self.pos.y - height * (1.0/8) + 1, 0, 5 * flip, 5, 1)
 
         self.loaded = self.sprite
         self.unloaded = image.Sprite(diffuse=Catapult.other)
@@ -134,6 +141,8 @@ class Projectile(PhysicsItem):
     def __init__(self, x, y, **kwargs):
         PhysicsItem.__init__(self, x=x, y=y, **kwargs)
         self.pos = Vector2f(x,y)
+        self.old = self.pos
+        self.traveled = 0
         self.mat = self.model_matrix() # hack (position set manually)
 
     def model_matrix(self):
@@ -141,6 +150,16 @@ class Projectile(PhysicsItem):
 
     def tilemap_collision(self):
         game.projectile_miss(self)
+
+    def update(self, map, dt):
+        PhysicsItem.update(self, map, dt)
+        self.traveled += (self.old - self.pos).length()
+
+        if self.traveled > 100:
+            for i in range(2):
+                d = (game.catapults[i].pos - self.pos).length()
+                if d < 2.5:
+                    game.projectile_hit(i)
 
 @register_type('light')
 class LightStub(Light):

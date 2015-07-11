@@ -38,7 +38,7 @@
                  "name":"Catapult 2",
                  "properties":
                     {
-
+                     "Flip":"1"
                     },
                  "rotation":0,
                  "type":"Catapult",

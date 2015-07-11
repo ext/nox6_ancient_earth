@@ -109,13 +109,14 @@ class Game(object):
         self.post = Shader.load('post')
 
         self.ambient_light = (1.0, 1.0, 1.0)
-        self.angle = [60, 60]
+        self.angle = [90, 60]
         self.force = [50, 50]
         self.player = 0
         self.firing = False
         self.sweep = None
         self.miss = False
         self.follow_cam = None
+        self.is_over = False
 
         self.map = Map('map.json')
         self.clock = pygame.time.Clock()
@@ -127,12 +128,12 @@ class Game(object):
         self.camera_max = self.map.width - 36
         self.catapults = [self.map.get_named_item('Catapult 1'), self.map.get_named_item('Catapult 2')]
 
-        self.land = pygame.mixer.Sound('data/sound/land.wav')
-        self.ding = pygame.mixer.Sound('data/sound/ding.wav')
-        self.eat = pygame.mixer.Sound('data/sound/eat.wav')
-        self.wind = pygame.mixer.Sound('data/sound/wind.wav')
+        #self.land = pygame.mixer.Sound('data/sound/land.wav')
+        #self.ding = pygame.mixer.Sound('data/sound/ding.wav')
+        #self.eat = pygame.mixer.Sound('data/sound/eat.wav')
+        #self.wind = pygame.mixer.Sound('data/sound/wind.wav')
 
-        self.wind.play(loops=-1)
+        #self.wind.play(loops=-1)
 
         self.textbuf = []
         self.texttime = -10.0
@@ -151,6 +152,9 @@ class Game(object):
     @event(pygame.QUIT)
     def quit(self, event=None):
         self._running = False
+
+    def over(self):
+        self.is_over = True
 
     @event(pygame.KEYDOWN)
     def on_keypress(self, event):
@@ -193,6 +197,16 @@ class Game(object):
     def projectile_miss(self, projectile):
         self.miss = True # defer so the projectile is rendered one more frame
 
+    def projectile_hit(self, hit):
+        # hack: remove all other message
+        self.textbuf = []
+
+        if self.player != hit:
+            self.text = 'Player %d hit the other player and won!' % (self.player+1)
+        else:
+            self.text = 'Player %d hit himself and lost...' % (self.player+1)
+        game.over()
+
     def poll(self):
         global event_table
         for event in pygame.event.get():
@@ -202,6 +216,10 @@ class Game(object):
             func(self, event)
 
     def update(self):
+        if self.is_over:
+            self.clock.tick(60)
+            return
+
         key = pygame.key.get_pressed()
 
         if self.miss:
@@ -214,10 +232,10 @@ class Game(object):
             if key[260]: self.camera.x -= 1
             if key[262]: self.camera.x += 1
 
-            if key[273]: self.angle[self.player] += 1
-            if key[274]: self.angle[self.player] -= 1
-            if key[275]: self.force[self.player] += 1
-            if key[276]: self.force[self.player] -= 1
+            if key[273]: self.angle[self.player] += 0.3
+            if key[274]: self.angle[self.player] -= 0.3
+            if key[275]: self.force[self.player] += 0.5
+            if key[276]: self.force[self.player] -= 0.5
 
             self.camera.x = min(max(self.camera.x, 0), self.camera_max)
             self.angle[self.player] = min(max(self.angle[self.player], 0), 90)
@@ -239,6 +257,9 @@ class Game(object):
 
             t = pygame.time.get_ticks() / 1000.0
             s = (t - self.texttime) / 1.8
+
+            if self.is_over:
+                s = 0
 
             if s > 1.0:
                 if len(self.textbuf) > 0:
@@ -377,7 +398,7 @@ class Game(object):
 
 def run():
     pygame.display.init()
-    pygame.mixer.init(channels=3, buffer=1024)
+    #pygame.mixer.init(channels=3, buffer=1024)
     pygame.mouse.set_visible(True)
 
     game = Game()

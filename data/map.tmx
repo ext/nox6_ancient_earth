@@ -13,7 +13,11 @@
  </layer>
  <objectgroup color="#ffff00" name="Player 1">
   <object id="36" name="Catapult 1" type="Catapult" x="36.5417" y="93.125" width="45.0833" height="26.875"/>
-  <object id="38" name="Catapult 2" type="Catapult" x="1524.13" y="92.2292" width="45.0833" height="26.875"/>
+  <object id="38" name="Catapult 2" type="Catapult" x="1524.13" y="92.2292" width="45.0833" height="26.875">
+   <properties>
+    <property name="Flip" value="1"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup color="#ffffff" name="Lights">
   <object id="33" type="Light" x="406" y="69" width="10" height="10">
