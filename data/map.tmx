@@ -8,7 +8,7 @@
  </tileset>
  <layer name="Tile Layer 1" width="132" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt1skKglAUxvESolWLrEXTKmjuAZp2tWja9P4v0rToExRErtPxek38fvAnOIVaHrBajYiIiIiIiIiIiIiIqNo6qIusoi/kT9Q19UQv9EYf9BUexwT/Dti+SN8+NFEjUEtwnDx5e2CH5GkHXsPEvV9GuvbggDZoi3Zo787S7oaVY2F74JXnuaWZpmMXbuiOzuiCroqZ8zkd96xqmZZ1FwZoiEaoh/oRs6J/2zJmmnQPnGtdoCVaoTWax8ySfH/VMyftjOQk/xcl90g1c+7/EZ3Qwz1P1DMn6Yzkku5C1nukmk3QFM3Q2D3XD7wGLr4=
+   eJzt0ksKgDAMQEH1CP7uf1S7EVxUsFqtkBl4W2tCug4AAAAAACC2KTWnhtSSWtv+TnN9Ybn99RW//4XjDGOmyLdRegN39/eHe9jnyM1wVrS7uHIHtfZ35R6GFyuZI3fz0WuxvydvSpKkmG2ttCx9
   </data>
  </layer>
  <objectgroup color="#ffff00" name="Objects">
@@ -19,33 +19,5 @@
    </properties>
   </object>
  </objectgroup>
- <objectgroup color="#ffffff" name="Lights">
-  <object id="33" type="Light" x="406" y="69" width="10" height="10">
-   <properties>
-    <property name="Color" value="(1,1,1)"/>
-    <property name="Falloff" value="10"/>
-    <property name="Phase Frequency" value="5"/>
-    <property name="Phase offset" value="0"/>
-    <property name="Radius" value="100"/>
-   </properties>
-  </object>
-  <object id="34" type="Light" x="464.667" y="69.3333" width="10" height="10">
-   <properties>
-    <property name="Color" value="(1,1,1)"/>
-    <property name="Falloff" value="10"/>
-    <property name="Phase Frequency" value="15"/>
-    <property name="Phase offset" value="0"/>
-    <property name="Radius" value="500"/>
-   </properties>
-  </object>
-  <object id="35" type="Light" x="529" y="69.3333" width="10" height="10">
-   <properties>
-    <property name="Color" value="(1,1,1)"/>
-    <property name="Falloff" value="10"/>
-    <property name="Phase Frequency" value="50"/>
-    <property name="Phase offset" value="0"/>
-    <property name="Radius" value="1000"/>
-   </properties>
-  </object>
- </objectgroup>
+ <objectgroup color="#ffffff" name="Lights"/>
 </map>
